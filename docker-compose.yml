@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+  postgresDB:
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: project-database
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "bsbgroup6"
+    volumes:
+    - ./data:/var/lib/postgresql/data
+    ports:
+    - "5432:5432"

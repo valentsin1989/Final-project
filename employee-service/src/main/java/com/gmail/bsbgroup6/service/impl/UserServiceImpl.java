@@ -57,7 +57,6 @@ public class UserServiceImpl implements UserService {
             return null;
         }
         return convertToUserDTO(user);
-
     }
 
     @Override

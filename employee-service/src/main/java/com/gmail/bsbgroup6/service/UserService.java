@@ -8,13 +8,13 @@ import com.gmail.bsbgroup6.service.model.UserDTO;
 public interface UserService {
     UserDTO getByUsername(String username);
 
-    UserDTO getByUserMail(String usermail);
+    UserDTO getByUserMail(String userMail);
 
     AddedUserDTO addUser(AddUserDTO addUserDTO);
 
     boolean addLoginFailedByUsername(String username);
 
-    boolean addLoginFailedByUserMail(String usermail);
+    boolean addLoginFailedByUserMail(String userMail);
 
     boolean isBlockedUser(LoginDTO loginDTO);
 }

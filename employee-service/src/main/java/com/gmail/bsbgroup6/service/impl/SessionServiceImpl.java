@@ -62,10 +62,24 @@ public class SessionServiceImpl implements SessionService {
         if (user != null) {
             user.setLogoutDate(dateString);
             Set<Session> sessions = user.getListSession();
-            sessions.forEach(session -> session.setClosedDate(dateString));
+            sessions.stream()
+                    .filter(session -> session.getClosedDate()==null)
+                    .forEach(session -> session.setClosedDate(dateString));
             return username;
         }
         return null;
+    }
+
+    @Override
+    public boolean isActiveSession(String jwtToken) {
+        Session session = sessionRepository.findByToken(jwtToken).orElse(null);
+        if (session != null) {
+            String closedDate = session.getClosedDate();
+            if(closedDate == null){
+                return true;
+            }
+        }
+        return false;
     }
 
     private String getDateNowInStringFormat() {

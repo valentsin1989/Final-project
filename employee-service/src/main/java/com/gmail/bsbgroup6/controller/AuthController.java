@@ -53,7 +53,7 @@ public class AuthController {
             Long userId = userValidator.validationUserByUsername(username, password);
             if(userId!=null){
                 String token = sessionService.addSessionByUserId(userId);
-                return ResponseEntity.ok(token);
+                return ResponseEntity.ok(Map.of("sessionId", token));
             } else {
                 return ResponseEntity
                         .status(400)
@@ -63,7 +63,7 @@ public class AuthController {
             Long userId = userValidator.validationUserByUserMail(userMail, password);
             if(userId!=null){
                 String token = sessionService.addSessionByUserId(userId);
-                return ResponseEntity.ok(token);
+                return ResponseEntity.ok(Map.of("sessionId", token));
             } else {
                 return ResponseEntity
                         .status(400)
@@ -73,16 +73,27 @@ public class AuthController {
         return ResponseEntity.badRequest().build();
     }
 
-
     @PostMapping(value = "/logout", consumes = "application/json")
     public ResponseEntity<Object> deAuthenticateUser(@Validated @RequestBody LogoutDTO logoutDTO) {
         String username = logoutDTO.getUsername();
-        String user = sessionService.closeAllSessionsByUsername(username);
-        if(user==null){
+        String usernameWithClosedSessions = sessionService.closeAllSessionsByUsername(username);
+        if(usernameWithClosedSessions==null){
             return ResponseEntity
                     .status(400)
                     .body(Map.of("message", "Sessions not found."));
         }
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(value = "/session", consumes = "application/json")
+    public ResponseEntity<Object> isActiveSession(@RequestHeader HttpHeaders headers) {
+        String jwtToken = jwtUtils.parseJwtFromHeaders(headers);
+        if (jwtToken != null && jwtUtils.validateJwtToken(jwtToken)) {
+            boolean isActiveSession = sessionService.isActiveSession(jwtToken);
+            if(isActiveSession){
+                return ResponseEntity.ok().build();
+            }
+        }
+        return ResponseEntity.badRequest().build();
     }
 }

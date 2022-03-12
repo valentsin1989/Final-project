@@ -4,7 +4,9 @@ public interface SessionService {
 
     String addSessionByUserId(Long userId);
 
-    String updateSessionByToken(String token);
+    String updateSessionByToken(String jwtToken);
 
     String closeAllSessionsByUsername(String username);
+
+    boolean isActiveSession(String jwtToken);
 }

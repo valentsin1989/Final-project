@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <changeSet id="1" author="bsbgroup6@gmail.com">
+        <createTable tableName="empl_user">
+            <column name="id" type="serial">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="username" type="varchar">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="password" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mail" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="firstname" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="login_failed" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="varchar"/>
+            <column name="login_date" type="varchar"/>
+            <column name="logout_date" type="varchar"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="bsbgroup6@gmail.com">
+        <createTable tableName="empl_session">
+            <column name="id" type="serial">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="session_id" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="varchar"/>
+            <column name="closed_date" type="varchar"/>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3" author="bsbgroup6@gmail.com">
+        <addForeignKeyConstraint baseTableName="empl_session"
+                                 baseColumnNames="user_id"
+                                 constraintName="foreign_key_for_user_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"
+                                 referencedTableName="empl_user"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+
+</databaseChangeLog>

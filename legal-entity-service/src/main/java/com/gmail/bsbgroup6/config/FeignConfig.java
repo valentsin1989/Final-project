@@ -15,7 +15,6 @@ public class FeignConfig {
         return requestTemplate -> {
             requestTemplate.header("Content-Type", "application/json");
             requestTemplate.header("Accept", "*/*");
-           //requestTemplate.header("Authorization", "Bearer eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2NDcwODk0OTIsImV4cCI6MTY0NzM0ODY5Mn0.xRQuIaSpuU-sU85yp_0AKBomlaOtu-3eBD2kUyAdfsnAznUOekURrexKoygJxu8vwe0nw-y8g7GcjdYJvJnkNA");
         };
     }
 }

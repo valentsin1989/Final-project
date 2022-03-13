@@ -1,6 +1,8 @@
 package com.gmail.bsbgroup6.security.filter;
 
+import com.gmail.bsbgroup6.repository.EmployeeServiceRepository;
 import com.gmail.bsbgroup6.security.util.JwtUtils;
+import liquibase.pro.packaged.A;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +27,8 @@ import java.util.Collection;
 public class AuthTokenFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtils jwtUtils;
+    @Autowired
+    private EmployeeServiceRepository employeeServiceRepository;
 
     @Override
     protected void doFilterInternal(
@@ -35,15 +39,18 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         try {
             String jwt = parseJwt(request);
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                Collection<GrantedAuthority> authorities = new ArrayList<>();
-                authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        null,
-                        null,
-                        authorities
-                );
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                String tokenStatus = employeeServiceRepository.getStatusToken(request.getHeader("Authorization"));
+                if(tokenStatus.equals("ENABLE")){
+                    Collection<GrantedAuthority> authorities = new ArrayList<>();
+                    authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                            null,
+                            null,
+                            authorities
+                    );
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             }
         } catch (Exception e) {
             logger.error("Cannot set user authentication: {}", e);

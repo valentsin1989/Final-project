@@ -91,9 +91,9 @@ public class AuthController {
         if (jwtToken != null && jwtUtils.validateJwtToken(jwtToken)) {
             boolean isActiveSession = sessionService.isActiveSession(jwtToken);
             if(isActiveSession){
-                return ResponseEntity.ok().build();
+                return ResponseEntity.ok().body("ENABLE");
             }
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok().body("DISABLE");
     }
 }

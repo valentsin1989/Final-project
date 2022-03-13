@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd
+      http://www.liquibase.org/xml/ns/pro
+      http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd">
+
+    <changeSet id="4" author="bsbgroup6@gmail.com">
+        <createTable tableName="legal_entities">
+            <column name="id" type="serial">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="unp" type="int">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="iban_by_byn" type="varchar(28)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="type" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_employees" type="int(1000)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5" author="bsbgroup6@gmail.com">
+        <createTable tableName="legal_entity_dates">
+            <column name="legal_id" type="int"/>
+            <column name="create_date" type="varchar"/>
+            <column name="last_update" type="varchar"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="6" author="bsbgroup6@gmail.com">
+        <addForeignKeyConstraint baseTableName="legal_entity_dates"
+                                 baseColumnNames="legal_id"
+                                 constraintName="foreign_key_for_company_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"
+                                 referencedTableName="legal_entities"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+</databaseChangeLog>

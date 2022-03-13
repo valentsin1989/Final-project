@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,19 +30,23 @@ public class LegalEntityController {
 
     private final LegalEntityService legalEntityService;
 
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<Object> addLegalEntity(@Validated @RequestBody AddLegalEntityDTO legalEntityDTO) {
         LegalEntityDTO viewLegalEntityDTO = legalEntityService.add(legalEntityDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(viewLegalEntityDTO + "Компания успешно создана");
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<List<LegalEntityDTO>> getAllLegalEntities() {
         List<LegalEntityDTO> legalEntities = legalEntityService.getAll();
         return ResponseEntity.status(HttpStatus.OK).body(legalEntities);
     }
 
     @GetMapping(value = "/{LegalId}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<Object> getLegalEntity(@PathVariable Integer LegalId) {
         Long id = Long.valueOf(LegalId);
         LegalEntityDTO legalEntity = legalEntityService.getById(id);

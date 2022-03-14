@@ -22,7 +22,8 @@ public class LegalEntityConverter {
         String name = legalEntityDTO.getName();
         legalEntity.setName(name);
         Integer UNP = legalEntityDTO.getUnp();
-        legalEntity.setUnp(UNP);
+        String unp = UNP.toString();
+        legalEntity.setUnp(unp);
         String IBANbyBYN = legalEntityDTO.getIbanByByn();
         legalEntity.setIbanByByn(IBANbyBYN);
         Boolean type = legalEntityDTO.getType();
@@ -39,7 +40,8 @@ public class LegalEntityConverter {
     public LegalEntityDTO convertToLegalEntityDTO(LegalEntity legalEntity) {
         Long id = legalEntity.getId();
         String name = legalEntity.getName();
-        Integer UNP = legalEntity.getUnp();
+        String unp = legalEntity.getUnp();
+        Integer UNP = Integer.valueOf(unp);
         String IBANbyBYN = legalEntity.getIbanByByn();
         String type = legalEntity.getType();
         Integer totalEmployees = legalEntity.getTotalEmployees();
@@ -59,14 +61,16 @@ public class LegalEntityConverter {
                 .collect(Collectors.toList());
     }
 
-    public LegalEntityDates convertToLegalEntityDates(Long id) {
-        LegalEntityDates legalEntityDates = new LegalEntityDates();
-        legalEntityDates.setLegalId(id);
-        LocalDate localDate = LocalDate.now();
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        String dateString = dateTimeFormatter.format(localDate);
-        legalEntityDates.setCreateDate(dateString);
-        legalEntityDates.setLastUpdate(dateString);
+    public LegalEntityDates convertToLegalEntityDates(LegalEntity legalEntityWithId) {
+        LegalEntityDates legalEntityDates = legalEntityWithId.getLegalEntityDates();
+        if (legalEntityDates == null) {
+            legalEntityDates = new LegalEntityDates(legalEntityWithId);
+            LocalDate localDate = LocalDate.now();
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            String dateString = dateTimeFormatter.format(localDate);
+            legalEntityDates.setCreateDate(dateString);
+            legalEntityDates.setLastUpdate(dateString);
+        }
         return legalEntityDates;
     }
 }

@@ -35,7 +35,7 @@ public class LegalEntityController {
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<Object> addLegalEntity(@Validated @RequestBody AddLegalEntityDTO legalEntityDTO) {
         LegalEntityDTO viewLegalEntityDTO = legalEntityService.add(legalEntityDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(viewLegalEntityDTO + "Компания успешно создана");
+        return ResponseEntity.status(HttpStatus.CREATED).body(viewLegalEntityDTO);
     }
 
     @GetMapping

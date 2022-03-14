@@ -39,4 +39,12 @@ public class LegalEntityDates {
 
     @Column(name = "last_update")
     private String lastUpdate;
+
+    public LegalEntityDates() {
+    }
+
+    public LegalEntityDates(LegalEntity legalEntity) {
+        this.legalEntity = legalEntity;
+        legalEntity.setLegalEntityDates(this);
+    }
 }

@@ -1,5 +1,6 @@
 package com.gmail.bsbgroup6.service.impl;
 
+import com.gmail.bsbgroup6.repository.LegalEntityDatesRepository;
 import com.gmail.bsbgroup6.repository.LegalEntityRepository;
 import com.gmail.bsbgroup6.repository.model.LegalEntity;
 import com.gmail.bsbgroup6.repository.model.LegalEntityDates;
@@ -13,8 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Slf4j
@@ -23,6 +22,7 @@ import java.util.List;
 public class LegalEntityServiceImpl implements LegalEntityService {
 
     private final LegalEntityRepository legalEntityRepository;
+    private final LegalEntityDatesRepository legalEntityDatesRepository;
     private final LegalEntityConverter legalEntityConverter;
 
     @Override
@@ -34,6 +34,9 @@ public class LegalEntityServiceImpl implements LegalEntityService {
         if (id == null) {
             throw new ServiceException("Legal entity wasn't added.");
         }
+        LegalEntity legalEntityWithId = legalEntityRepository.findById(id);
+        LegalEntityDates legalEntityDates = legalEntityConverter.convertToLegalEntityDates(legalEntityWithId);
+        legalEntityDatesRepository.add(legalEntityDates);
         return legalEntityConverter.convertToLegalEntityDTO(legalEntity);
     }
 

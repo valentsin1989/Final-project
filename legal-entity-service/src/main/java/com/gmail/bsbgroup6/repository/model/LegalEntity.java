@@ -28,7 +28,7 @@ public class LegalEntity {
     private String name;
 
     @Column(name = "unp", unique = true, nullable = false)
-    private Integer unp;
+    private String unp;
 
     @Column(name = "iban_by_byn", unique = true, nullable = false)
     private String ibanByByn;

@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 @Data
 @IfExists
 public class AddLegalEntityDTO {
-    @NotBlank(message = "Неверно заданы параметры")
+    @NotBlank(message = "Поле Name_Legal не может быть пустым")
     @Size(max = 255, message = "Неверно заданы параметры")
     @JsonProperty("Name_Legal")
     private final String name;

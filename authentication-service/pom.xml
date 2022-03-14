@@ -9,7 +9,7 @@
   </parent>
 
   <groupId>com.gmail.bsbgroup6</groupId>
-  <artifactId>employee-service</artifactId>
+  <artifactId>authentication-service</artifactId>
   <version>1.0</version>
 
   <properties>

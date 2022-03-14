@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: "user"
       POSTGRES_PASSWORD: "bsbgroup6"
     volumes:
-      - ./data:/var/lib/postgresql/data
+      - ./data_legal_entity:/var/lib/postgresql/data
     ports:
       - "5432:5432"
   postgresSecondDB:
@@ -17,7 +17,7 @@ services:
       POSTGRES_USER: "user"
       POSTGRES_PASSWORD: "bsbgroup6"
     volumes:
-      - ./data:/var/lib/postgresql/data
+      - ./data_auth:/var/lib/postgresql/data
     ports:
       - "5433:5433"
     command: -p 5433

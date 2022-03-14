@@ -16,7 +16,7 @@
   <version>1.0</version>
 
   <modules>
-    <module>employee-service</module>
+    <module>authentication-service</module>
     <module>legal-entity-service</module>
   </modules>
   

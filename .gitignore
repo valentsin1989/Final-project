@@ -39,4 +39,5 @@ mvnw
 mvnw.cmd
 
 #Database#
-data
+data_auth
+data_legal_entity

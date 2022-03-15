@@ -21,3 +21,14 @@ services:
     ports:
       - "5433:5433"
     command: -p 5433
+  postgresThirdDB:
+      image: postgres:13.3
+      environment:
+        POSTGRES_DB: project-database
+        POSTGRES_USER: "user"
+        POSTGRES_PASSWORD: "bsbgroup6"
+      volumes:
+        - ./data_empl:/var/lib/postgresql/data
+      ports:
+        - "5434:5434"
+      command: -p 5434

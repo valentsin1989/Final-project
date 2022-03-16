@@ -28,13 +28,16 @@ public class SessionServiceImpl implements SessionService {
         String token = jwtUtils.generateJwtToken();
         String dateString = getDateNowInStringFormat();
         User user = userRepository.findUserById(id).orElse(null);
-        user.setLoginDate(dateString);
-        user.setLoginFailed(0);
-        Session session = new Session();
-        session.setSessionId(token);
-        session.setCreatedDate(dateString);
-        user.addSession(session);
-        return token;
+        if (user != null) {
+            user.setLoginDate(dateString);
+            user.setLoginFailed(0);
+            Session session = new Session();
+            session.setSessionId(token);
+            session.setCreatedDate(dateString);
+            user.addSession(session);
+            return token;
+        }
+        return null;
     }
 
     @Override
@@ -45,11 +48,13 @@ public class SessionServiceImpl implements SessionService {
             String dateString = getDateNowInStringFormat();
             session.setClosedDate(dateString);
             User user = session.getUser();
-            Session newSession = new Session();
-            newSession.setSessionId(token);
-            newSession.setCreatedDate(dateString);
-            user.addSession(newSession);
-            return token;
+            if(user != null){
+                Session newSession = new Session();
+                newSession.setSessionId(token);
+                newSession.setCreatedDate(dateString);
+                user.addSession(newSession);
+                return token;
+            }
         }
         return null;
     }

@@ -6,7 +6,6 @@ import com.gmail.bsbgroup6.repository.model.User;
 import com.gmail.bsbgroup6.service.UserService;
 import com.gmail.bsbgroup6.service.model.*;
 import lombok.AllArgsConstructor;
-import org.hibernate.service.spi.ServiceException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,7 +28,7 @@ public class UserServiceImpl implements UserService {
         userRepository.add(user);
         Long id = user.getId();
         if (id == null) {
-            throw new ServiceException("User not created.");
+            return null;
         }
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("hh.mm dd.MM.yyyy");

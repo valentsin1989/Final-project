@@ -32,7 +32,12 @@ public class AuthController {
     @PostMapping(value = "/signin", consumes = "application/json")
     public ResponseEntity<Object> registerUser(@Validated @RequestBody AddUserDTO addUserDTO) {
         AddedUserDTO addedUser = userService.addUser(addUserDTO);
-        return ResponseEntity.status(201).body(addedUser);
+        if(addedUser!=null){
+            return ResponseEntity.status(201).body(addedUser);
+        }
+        return ResponseEntity
+                .status(400)
+                .body(Map.of("message", "User is not created."));
     }
 
     @PostMapping(value = "/login", consumes = "application/json")
@@ -40,7 +45,9 @@ public class AuthController {
         String jwtToken = jwtUtils.parseJwtFromHeaders(headers);
         if (jwtToken != null && jwtUtils.validateJwtToken(jwtToken)) {
             String newJwtToken = sessionService.updateSessionByToken(jwtToken);
-            return ResponseEntity.ok(newJwtToken);
+            if (newJwtToken != null){
+                return ResponseEntity.ok(newJwtToken);
+            }
         }
         String username = loginDTO.getUsername();
         String userMail = loginDTO.getUserMail();

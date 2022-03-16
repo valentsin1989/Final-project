@@ -9,18 +9,22 @@ import com.gmail.bsbgroup6.service.converter.LegalEntityConverter;
 import com.gmail.bsbgroup6.service.exception.ServiceException;
 import com.gmail.bsbgroup6.service.model.AddLegalEntityDTO;
 import com.gmail.bsbgroup6.service.model.LegalEntityDTO;
+import com.gmail.bsbgroup6.service.model.PaginationLegalEntityDTO;
+import com.gmail.bsbgroup6.service.model.SearchLegalEntityDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @AllArgsConstructor
 public class LegalEntityServiceImpl implements LegalEntityService {
 
+    private static final int DEFAULT_COUNT_OF_ENTITIES_PER_PAGE = 10;
     private final LegalEntityRepository legalEntityRepository;
     private final LegalEntityDatesRepository legalEntityDatesRepository;
     private final LegalEntityConverter legalEntityConverter;
@@ -42,12 +46,33 @@ public class LegalEntityServiceImpl implements LegalEntityService {
 
     @Override
     @Transactional
-    public List<LegalEntityDTO> getAll() {
-        List<LegalEntity> legalEntities = legalEntityRepository.findAll();
+    public List<LegalEntityDTO> getByPagination(PaginationLegalEntityDTO legalEntityDTO) {
+        Boolean pagination = legalEntityDTO.getPagination();
+        Integer customizedPage = legalEntityDTO.getCustomizedPage();
+        int maxResult;
+        if (pagination) {
+            maxResult = DEFAULT_COUNT_OF_ENTITIES_PER_PAGE;
+        } else {
+            maxResult = customizedPage;
+        }
+        Integer page = legalEntityDTO.getPage();
+        List<LegalEntity> legalEntities = legalEntityRepository.findByPagination(page, maxResult);
         if (legalEntities == null) {
             throw new ServiceException("Legal entities are not found.");
         }
         return legalEntityConverter.convertToListLegalEntityDTO(legalEntities);
+    }
+
+    @Override
+    public List<LegalEntityDTO> getLegalEntitiesByParameters(SearchLegalEntityDTO legalEntityDTO) {
+        String name = legalEntityDTO.getName();
+        Integer unp = legalEntityDTO.getUnp();
+        String UNP = unp.toString();
+        String ibanByByn = legalEntityDTO.getIbanByByn();
+        List<LegalEntity> legalEntities = legalEntityRepository.findByParameters(name, UNP, ibanByByn);
+        return legalEntities.stream()
+                .map(legalEntityConverter::convertToLegalEntityDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

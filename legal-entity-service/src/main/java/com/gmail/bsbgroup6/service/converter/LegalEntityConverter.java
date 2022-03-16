@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class LegalEntityConverter {
 
+    private static final String DATE_PATTERN = "dd/MM/yyyy";
+
     public LegalEntity convertToLegalEntity(AddLegalEntityDTO legalEntityDTO) {
         LegalEntity legalEntity = new LegalEntity();
         String name = legalEntityDTO.getName();
@@ -66,7 +68,7 @@ public class LegalEntityConverter {
         if (legalEntityDates == null) {
             legalEntityDates = new LegalEntityDates(legalEntityWithId);
             LocalDate localDate = LocalDate.now();
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
             String dateString = dateTimeFormatter.format(localDate);
             legalEntityDates.setCreateDate(dateString);
             legalEntityDates.setLastUpdate(dateString);

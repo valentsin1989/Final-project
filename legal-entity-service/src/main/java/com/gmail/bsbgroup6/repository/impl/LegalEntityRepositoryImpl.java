@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -52,5 +54,29 @@ public class LegalEntityRepositoryImpl extends GenericRepositoryImpl<Long, Legal
         } catch (NoResultException e) {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public List<LegalEntity> findByParameters(String name, String unp, String ibanByByn) {
+        String queryString = "select l from LegalEntity as l where l.name like :name " +
+                "or l.unp like :unp or l.ibanByByn like :ibanByByn";
+        Query query = em.createQuery(queryString);
+        query.setParameter("name", name + "%");
+        query.setParameter("unp", unp + "%");
+        query.setParameter("ibanByByn", ibanByByn + "%");
+        try {
+            return (List<LegalEntity>) query.getResultList();
+        } catch (NoResultException e) {
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public List<LegalEntity> findByPagination(int page, int maxResult) {
+        String queryString = "select l from LegalEntity as l order by l.id asc";
+        Query query = em.createQuery(queryString);
+        query.setFirstResult((maxResult * page) - maxResult);
+        query.setMaxResults(maxResult);
+        return query.getResultList();
     }
 }

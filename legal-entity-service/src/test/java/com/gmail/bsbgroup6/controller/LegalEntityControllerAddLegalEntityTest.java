@@ -25,33 +25,28 @@ import java.util.List;
 import java.util.Map;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = LegalEntityController.class)
-class LegalEntityControllerTest {
-
-    @MockBean
-    private EmployeeServiceRepository employeeServiceRepository;
+class LegalEntityControllerAddLegalEntityTest {
 
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private ObjectMapper objectMapper;
-
     @MockBean
     private AuthEntryPointJwt unauthorizedHandler;
-
     @MockBean
     private JwtUtils jwtUtils;
-
     @MockBean
     private LegalEntityService legalEntityService;
-
     @MockBean
     private LegalEntityValidator legalEntityValidator;
+    @MockBean
+    private EmployeeServiceRepository employeeServiceRepository;
 
     @WithMockUser(roles = {"USER"})
     @Test
@@ -85,6 +80,22 @@ class LegalEntityControllerTest {
         mockMvc.perform(post("/api/legals")
                         .contentType(MediaType.APPLICATION_XML_VALUE))
                 .andExpect(status().isUnsupportedMediaType());
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    void shouldReturn400WhenWePostLegalEntityWithUnsupportedURL() throws Exception {
+        mockMvc.perform(get("/api/legals/legal")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isBadRequest());
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    void shouldReturn400WhenWePostLegalEntityWithEmptyRequestBody() throws Exception {
+        mockMvc.perform(post("/api/legals")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isBadRequest());
     }
 
     @WithMockUser(roles = {"USER"})

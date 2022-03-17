@@ -32,52 +32,33 @@ public class AuthController {
     @PostMapping(value = "/signin", consumes = "application/json")
     public ResponseEntity<Object> registerUser(@Validated @RequestBody AddUserDTO addUserDTO) {
         AddedUserDTO addedUser = userService.addUser(addUserDTO);
-        return ResponseEntity.status(201).body(addedUser);
+        if (addedUser != null) {
+            return ResponseEntity.status(201).body(addedUser);
+        }
+        return ResponseEntity
+                .status(400)
+                .body(Map.of("message", "User is not created."));
     }
 
     @PostMapping(value = "/login", consumes = "application/json")
-    public ResponseEntity<Object> authenticateUser(@Validated @RequestBody LoginDTO loginDTO, @RequestHeader HttpHeaders headers) {
+    public ResponseEntity<Object> authenticateUser(
+            @Validated @RequestBody LoginDTO loginDTO,
+            @RequestHeader HttpHeaders headers
+    ) {
         String jwtToken = jwtUtils.parseJwtFromHeaders(headers);
-        if (jwtToken != null && jwtUtils.validateJwtToken(jwtToken)) {
-            String newJwtToken = sessionService.updateSessionByToken(jwtToken);
-            return ResponseEntity.ok(newJwtToken);
+        String newJwtToken = sessionService.updateSessionByToken(jwtToken);
+        if (newJwtToken != null) {
+            return ResponseEntity.ok(Map.of("sessionId", newJwtToken));
+        } else {
+            return addSessionForUserByLogin(loginDTO);
         }
-        String username = loginDTO.getUsername();
-        String userMail = loginDTO.getUserMail();
-        String password = loginDTO.getPassword();
-        if (username != null && userMail != null) {
-            return ResponseEntity
-                    .status(400)
-                    .body(Map.of("message", "Either username or password must be entered"));
-        } else if (username != null){
-            Long userId = userValidator.validationUserByUsername(username, password);
-            if(userId!=null){
-                String token = sessionService.addSessionByUserId(userId);
-                return ResponseEntity.ok(Map.of("sessionId", token));
-            } else {
-                return ResponseEntity
-                        .status(400)
-                        .body(Map.of("message", "Username or password not valid"));
-            }
-        }else if (userMail != null) {
-            Long userId = userValidator.validationUserByUserMail(userMail, password);
-            if(userId!=null){
-                String token = sessionService.addSessionByUserId(userId);
-                return ResponseEntity.ok(Map.of("sessionId", token));
-            } else {
-                return ResponseEntity
-                        .status(400)
-                        .body(Map.of("message", "Mail or password not valid"));
-            }
-        }
-        return ResponseEntity.badRequest().build();
     }
 
     @PostMapping(value = "/logout", consumes = "application/json")
     public ResponseEntity<Object> deAuthenticateUser(@Validated @RequestBody LogoutDTO logoutDTO) {
         String username = logoutDTO.getUsername();
         String usernameWithClosedSessions = sessionService.closeAllSessionsByUsername(username);
-        if(usernameWithClosedSessions==null){
+        if (usernameWithClosedSessions == null) {
             return ResponseEntity
                     .status(400)
                     .body(Map.of("message", "Sessions not found."));
@@ -90,10 +71,29 @@ public class AuthController {
         String jwtToken = jwtUtils.parseJwtFromHeaders(headers);
         if (jwtToken != null && jwtUtils.validateJwtToken(jwtToken)) {
             boolean isActiveSession = sessionService.isActiveSession(jwtToken);
-            if(isActiveSession){
+            if (isActiveSession) {
                 return ResponseEntity.ok().body("ENABLE");
             }
         }
         return ResponseEntity.ok().body("DISABLE");
+    }
+
+    private ResponseEntity<Object> addSessionForUserByLogin(LoginDTO loginDTO) {
+        String username = loginDTO.getUsername();
+        String userMail = loginDTO.getUsermail();
+        if (username != null && userMail != null) {
+            return ResponseEntity
+                    .status(400)
+                    .body(Map.of("message", "Either username or password must be entered"));
+        }
+        Long userId = userValidator.validationUser(loginDTO);
+        if (userId != null) {
+            String token = sessionService.addSessionByUserId(userId);
+            return ResponseEntity.ok(Map.of("sessionId", token));
+        } else {
+            return ResponseEntity
+                    .status(400)
+                    .body(Map.of("message", "Username or password not valid"));
+        }
     }
 }

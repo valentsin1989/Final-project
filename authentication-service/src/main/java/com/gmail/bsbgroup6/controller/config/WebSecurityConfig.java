@@ -1,4 +1,4 @@
-package com.gmail.bsbgroup6.config;
+package com.gmail.bsbgroup6.controller.config;
 
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Configuration;

@@ -15,7 +15,7 @@ public class LoginDTO {
     private String username;
     @Size(max = 20, message = "Login or password not valid.")
     @Pattern(regexp = "\\A[a-z1-9]+@[a-z]+\\.[a-z]+\\z", message = "Login or password not valid.")
-    private String userMail;
+    private String usermail;
     @NotNull(message = "Login or password not valid.")
     @Size(min = 8, max = 20, message = "Login or password not valid.")
     private String password;

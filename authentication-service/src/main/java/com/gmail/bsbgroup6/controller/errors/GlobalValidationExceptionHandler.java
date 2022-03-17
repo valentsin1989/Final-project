@@ -1,4 +1,4 @@
-package com.gmail.bsbgroup6.errors;
+package com.gmail.bsbgroup6.controller.errors;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;

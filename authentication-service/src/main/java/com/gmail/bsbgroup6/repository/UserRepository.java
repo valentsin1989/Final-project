@@ -11,4 +11,6 @@ public interface UserRepository extends GenericRepository<Long, User> {
     Optional<User> findByUserMail(String userMail);
 
     Optional<User> findUserById(Long id);
+
+    Optional<User> findUserByNameOrMail(String username, String userMail);
 }

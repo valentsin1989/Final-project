@@ -25,12 +25,12 @@ public class SessionServiceImpl implements SessionService {
     @Override
     @Transactional
     public String addSessionByUserId(Long id) {
-        String token = jwtUtils.generateJwtToken();
-        String dateString = getDateNowInStringFormat();
         User user = userRepository.findUserById(id).orElse(null);
         if (user != null) {
+            String dateString = getDateNowInStringFormat();
             user.setLoginDate(dateString);
             user.setLoginFailed(0);
+            String token = jwtUtils.generateJwtToken();
             Session session = new Session();
             session.setSessionId(token);
             session.setCreatedDate(dateString);
@@ -43,17 +43,20 @@ public class SessionServiceImpl implements SessionService {
     @Override
     @Transactional
     public String updateSessionByToken(String token) {
-        Session session = sessionRepository.findByToken(token).orElse(null);
-        if (session != null) {
-            String dateString = getDateNowInStringFormat();
-            session.setClosedDate(dateString);
-            User user = session.getUser();
-            if(user != null){
-                Session newSession = new Session();
-                newSession.setSessionId(token);
-                newSession.setCreatedDate(dateString);
-                user.addSession(newSession);
-                return token;
+        if (token != null && jwtUtils.validateJwtToken(token)) {
+            Session session = sessionRepository.findByToken(token).orElse(null);
+            if (session != null) {
+                String dateString = getDateNowInStringFormat();
+                session.setClosedDate(dateString);
+                User user = session.getUser();
+                if (user != null) {
+                    String newToken = jwtUtils.generateJwtToken();
+                    Session newSession = new Session();
+                    newSession.setSessionId(newToken);
+                    newSession.setCreatedDate(dateString);
+                    user.addSession(newSession);
+                    return token;
+                }
             }
         }
         return null;
@@ -68,7 +71,7 @@ public class SessionServiceImpl implements SessionService {
             user.setLogoutDate(dateString);
             Set<Session> sessions = user.getListSession();
             sessions.stream()
-                    .filter(session -> session.getClosedDate()==null)
+                    .filter(session -> session.getClosedDate() == null)
                     .forEach(session -> session.setClosedDate(dateString));
             return username;
         }
@@ -80,9 +83,7 @@ public class SessionServiceImpl implements SessionService {
         Session session = sessionRepository.findByToken(jwtToken).orElse(null);
         if (session != null) {
             String closedDate = session.getClosedDate();
-            if(closedDate == null){
-                return true;
-            }
+            return closedDate == null;
         }
         return false;
     }
@@ -90,7 +91,6 @@ public class SessionServiceImpl implements SessionService {
     private String getDateNowInStringFormat() {
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("hh.mm dd.MM.yyyy");
-        String dateString = dateTimeFormatter.format(localDateTime);
-        return dateString;
+        return dateTimeFormatter.format(localDateTime);
     }
 }

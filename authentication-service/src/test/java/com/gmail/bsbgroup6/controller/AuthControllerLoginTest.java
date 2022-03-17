@@ -1,7 +1,6 @@
 package com.gmail.bsbgroup6.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gmail.bsbgroup6.controller.AuthController;
 import com.gmail.bsbgroup6.controller.validator.UserValidator;
 import com.gmail.bsbgroup6.service.SessionService;
 import com.gmail.bsbgroup6.service.UserService;
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -50,7 +48,7 @@ class AuthControllerLoginTest {
     void shouldReturn400WhenLoginDTOWithAllFields() throws Exception {
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.setUsername("testname");
-        loginDTO.setUserMail("allen@example.com");
+        loginDTO.setUsermail("allen@example.com");
         loginDTO.setPassword("testPass123");
         MvcResult mvcResult = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -65,7 +63,7 @@ class AuthControllerLoginTest {
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.setUsername("testname");
         loginDTO.setPassword("testPass123");
-        when(userValidator.validationUserByUsername(loginDTO.getUsername(), loginDTO.getPassword())).thenReturn(1L);
+        when(userValidator.validationUser(loginDTO)).thenReturn(1L);
         when(sessionService.addSessionByUserId(1L)).thenReturn("token");
         MvcResult mvcResult = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -81,7 +79,7 @@ class AuthControllerLoginTest {
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.setUsername("testname");
         loginDTO.setPassword("testPass123");
-        when(userValidator.validationUserByUsername(loginDTO.getUsername(), loginDTO.getPassword())).thenReturn(null);
+        when(userValidator.validationUser(loginDTO)).thenReturn(null);
         MvcResult mvcResult = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(loginDTO)))
@@ -93,9 +91,9 @@ class AuthControllerLoginTest {
     @Test
     void shouldReturn200WhenLoginWithValidUserMail() throws Exception {
         LoginDTO loginDTO = new LoginDTO();
-        loginDTO.setUserMail("allen@example.com");
+        loginDTO.setUsermail("allen@example.com");
         loginDTO.setPassword("testPass123");
-        when(userValidator.validationUserByUserMail(loginDTO.getUserMail(), loginDTO.getPassword())).thenReturn(1L);
+        when(userValidator.validationUser(loginDTO)).thenReturn(1L);
         when(sessionService.addSessionByUserId(1L)).thenReturn("token");
         MvcResult mvcResult = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -109,23 +107,24 @@ class AuthControllerLoginTest {
     @Test
     void shouldReturn400WhenLoginWithoutValidUserMail() throws Exception {
         LoginDTO loginDTO = new LoginDTO();
-        loginDTO.setUserMail("allen@example.com");
+        loginDTO.setUsermail("allen@example.com");
         loginDTO.setPassword("testPass123");
-        when(userValidator.validationUserByUserMail(loginDTO.getUserMail(), loginDTO.getPassword())).thenReturn(null);
+        when(userValidator.validationUser(loginDTO)).thenReturn(null);
         MvcResult mvcResult = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(loginDTO)))
                 .andExpect(status().isBadRequest()).andReturn();
         String actualResponse = mvcResult.getResponse().getContentAsString();
-        Assertions.assertTrue(actualResponse.contains("Mail or password not valid"));
+        Assertions.assertTrue(actualResponse.contains("Username or password not valid"));
     }
 
     @Test
     void shouldReturn400WhenWeLoginWithPassword() throws Exception {
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.setUsername(null);
-        loginDTO.setUserMail(null);
+        loginDTO.setUsermail(null);
         loginDTO.setPassword("testPass123");
+        when(userValidator.validationUser(loginDTO)).thenReturn(null);
         mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(loginDTO)))

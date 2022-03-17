@@ -16,6 +16,7 @@ public class BlockedUserValidator implements ConstraintValidator<BlockedUser, Lo
 
     @Override
     public boolean isValid(LoginDTO loginDTO, ConstraintValidatorContext constraintValidatorContext) {
+
         return !userService.isBlockedUser(loginDTO);
     }
 }

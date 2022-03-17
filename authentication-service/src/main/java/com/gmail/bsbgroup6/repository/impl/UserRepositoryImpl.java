@@ -51,4 +51,26 @@ public class UserRepositoryImpl extends GenericRepositoryImpl<Long, User> implem
             return Optional.empty();
         }
     }
+
+    @Override
+    public Optional<User> findUserByNameOrMail(String username, String userMail) {
+        StringBuilder queryString = new StringBuilder("select u from User as u");
+        Query query;
+        if (username != null){
+            queryString.append(" where u.username=:username");
+            query = em.createQuery(queryString.toString());
+            query.setParameter("username", username);
+        }else {
+            queryString.append(" where u.mail=:mail");
+            query = em.createQuery(queryString.toString());
+            query.setParameter("mail", userMail);
+        }
+        User user;
+        try {
+            user = (User) query.getSingleResult();
+            return Optional.of(user);
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
+    }
 }

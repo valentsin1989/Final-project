@@ -1,6 +1,7 @@
 package com.gmail.bsbgroup6.service.impl;
 
 import com.gmail.bsbgroup6.repository.UserRepository;
+import com.gmail.bsbgroup6.repository.model.Session;
 import com.gmail.bsbgroup6.repository.model.StatusEnum;
 import com.gmail.bsbgroup6.repository.model.User;
 import com.gmail.bsbgroup6.service.UserService;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -39,6 +41,42 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    public UserDTO getUser(LoginDTO loginDTO) {
+        String username = loginDTO.getUsername();
+        String userMail = loginDTO.getUsermail();
+        User user = userRepository.findUserByNameOrMail(username, userMail).orElse(null);
+        if (user == null) {
+            return null;
+        }
+        return convertToUserDTO(user);
+    }
+
+    @Override
+    @Transactional
+    public boolean addLoginFailed(LoginDTO loginDTO) {
+        String username = loginDTO.getUsername();
+        String userMail = loginDTO.getUsermail();
+        User user = userRepository.findUserByNameOrMail(username, userMail).orElse(null);
+        if (user != null) {
+            Integer loginFailed = user.getLoginFailed();
+            if (loginFailed >= 5) {
+                user.setStatus(StatusEnum.DISABLE);
+                String dateString = getDateNowInStringFormat();
+                user.setLogoutDate(dateString);
+                Set<Session> sessions = user.getListSession();
+                sessions.stream()
+                        .filter(session -> session.getClosedDate() == null)
+                        .forEach(session -> session.setClosedDate(dateString));
+            } else {
+                user.setLoginFailed(++loginFailed);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    @Transactional
     public UserDTO getByUsername(String username) {
         User user = userRepository.findByUsername(username).orElse(null);
         if (user == null) {
@@ -60,51 +98,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public boolean addLoginFailedByUsername(String username) {
-        User user = userRepository.findByUsername(username).orElse(null);
-        if (user != null) {
-            Integer loginFailed = user.getLoginFailed();
-            user.setLoginFailed(++loginFailed);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    @Transactional
-    public boolean addLoginFailedByUserMail(String userMail) {
-        User user = userRepository.findByUserMail(userMail).orElse(null);
-        if (user != null) {
-            Integer loginFailed = user.getLoginFailed();
-            user.setLoginFailed(++loginFailed);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    @Transactional
     public boolean isBlockedUser(LoginDTO loginDTO) {
         String username = loginDTO.getUsername();
-        String mail = loginDTO.getUserMail();
-        if (username != null) {
-            User user = userRepository.findByUsername(username).orElse(null);
-            if (user != null) {
-                Integer loginFailed = user.getLoginFailed();
-                if (loginFailed >= 5) {
-                    user.setStatus(StatusEnum.DISABLE);
-                    return true;
-                }
-            }
-        } else if (mail != null) {
-            User user = userRepository.findByUserMail(mail).orElse(null);
-            if (user != null) {
-                Integer loginFailed = user.getLoginFailed();
-                if (loginFailed >= 5) {
-                    user.setStatus(StatusEnum.DISABLE);
-                    return true;
-                }
-            }
+        String userMail = loginDTO.getUsermail();
+        User user = userRepository.findUserByNameOrMail(username, userMail).orElse(null);
+        if (user != null) {
+            StatusEnum status = user.getStatus();
+            return status.equals(StatusEnum.DISABLE);
         }
         return false;
     }
@@ -145,5 +145,11 @@ public class UserServiceImpl implements UserService {
         addedUserDTO.setUserId(id);
         addedUserDTO.setStatus(status);
         return addedUserDTO;
+    }
+
+    private String getDateNowInStringFormat() {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("hh.mm dd.MM.yyyy");
+        return dateTimeFormatter.format(localDateTime);
     }
 }

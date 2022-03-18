@@ -1,4 +1,4 @@
-package com.gmail.bsbgroup6.repository.model;
+package com.gmail.bsbgroup6.service.model;
 
 public enum LegalTypeEnum {
     RESIDENT,

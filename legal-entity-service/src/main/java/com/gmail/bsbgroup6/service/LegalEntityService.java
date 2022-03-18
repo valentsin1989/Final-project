@@ -13,7 +13,7 @@ public interface LegalEntityService {
 
     List<LegalEntityDTO> getByPagination(PaginationLegalEntityDTO legalEntityDTO);
 
-    List<LegalEntityDTO> getLegalEntitiesByParameters(SearchLegalEntityDTO legalEntityDTO);
+    List<LegalEntityDTO> getByParameters(SearchLegalEntityDTO legalEntityDTO);
 
     LegalEntityDTO getById(Long id);
 

@@ -3,6 +3,7 @@ package com.gmail.bsbgroup6.controller;
 import com.gmail.bsbgroup6.service.LegalEntityService;
 import com.gmail.bsbgroup6.service.model.AddLegalEntityDTO;
 import com.gmail.bsbgroup6.service.model.LegalEntityDTO;
+import com.gmail.bsbgroup6.service.model.PaginationEnum;
 import com.gmail.bsbgroup6.service.model.PaginationLegalEntityDTO;
 import com.gmail.bsbgroup6.service.model.SearchLegalEntityDTO;
 import lombok.AllArgsConstructor;
@@ -41,8 +42,8 @@ public class LegalEntityController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_USER')")
-    public ResponseEntity<Object> filterLegalEntities(
-            @RequestParam(name = "pagination", required = false) Boolean pagination,
+    public ResponseEntity<?> getLegalEntities(
+            @RequestParam(name = "pagination", required = false) PaginationEnum pagination,
             @RequestParam(name = "page", required = false) Integer page,
             @RequestParam(name = "customized_page", required = false) Integer customizedPage,
             @RequestParam(name = "Name_Legal", required = false) String name,
@@ -55,7 +56,7 @@ public class LegalEntityController {
             legalEntityDTO.setPage(page);
             legalEntityDTO.setCustomizedPage(customizedPage);
             List<LegalEntityDTO> legalEntities = legalEntityService.getByPagination(legalEntityDTO);
-            if (legalEntities == null) {
+            if (legalEntities.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("Компании не найдены");
             }
@@ -66,8 +67,8 @@ public class LegalEntityController {
         legalEntityDTO.setName(name);
         legalEntityDTO.setUnp(unp);
         legalEntityDTO.setIbanByByn(ibanByByn);
-        List<LegalEntityDTO> legalEntities = legalEntityService.getLegalEntitiesByParameters(legalEntityDTO);
-        if (legalEntities == null) {
+        List<LegalEntityDTO> legalEntities = legalEntityService.getByParameters(legalEntityDTO);
+        if (legalEntities.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("Компания не найдена, измените параметры поиска");
         }

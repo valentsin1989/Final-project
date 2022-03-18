@@ -2,6 +2,8 @@ package com.gmail.bsbgroup6.repository.impl;
 
 import com.gmail.bsbgroup6.repository.LegalEntityRepository;
 import com.gmail.bsbgroup6.repository.model.LegalEntity;
+import com.gmail.bsbgroup6.repository.model.LegalSearch;
+import com.gmail.bsbgroup6.repository.model.Pagination;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
@@ -57,13 +59,13 @@ public class LegalEntityRepositoryImpl extends GenericRepositoryImpl<Long, Legal
     }
 
     @Override
-    public List<LegalEntity> findByParameters(String name, String unp, String ibanByByn) {
-        String queryString = "select l from LegalEntity as l where l.name like :name " +
-                "or l.unp like :unp or l.ibanByByn like :ibanByByn";
+    public List<LegalEntity> findByPagination(Pagination pagination) {
+        String queryString = "select l from LegalEntity as l order by l.id asc";
+        int page = pagination.getPage();
+        int maxResult = pagination.getMaxResult();
         Query query = em.createQuery(queryString);
-        query.setParameter("name", name + "%");
-        query.setParameter("unp", unp + "%");
-        query.setParameter("ibanByByn", ibanByByn + "%");
+        query.setFirstResult((maxResult * page) - maxResult);
+        query.setMaxResults(maxResult);
         try {
             return (List<LegalEntity>) query.getResultList();
         } catch (NoResultException e) {
@@ -72,11 +74,51 @@ public class LegalEntityRepositoryImpl extends GenericRepositoryImpl<Long, Legal
     }
 
     @Override
-    public List<LegalEntity> findByPagination(int page, int maxResult) {
-        String queryString = "select l from LegalEntity as l order by l.id asc";
-        Query query = em.createQuery(queryString);
-        query.setFirstResult((maxResult * page) - maxResult);
-        query.setMaxResults(maxResult);
-        return query.getResultList();
+    public List<LegalEntity> findByParameters(LegalSearch legalSearch) {
+        String name = legalSearch.getName();
+        String unp = legalSearch.getUnp();
+        String ibanByByn = legalSearch.getIbanByByn();
+        StringBuilder command = new StringBuilder("select l from LegalEntity as l");
+        boolean isAppendedName = appendParameter(false, name, command, " l.name like :name");
+        boolean isAppendedUnp = appendParameter(isAppendedName, unp, command, " l.unp like :unp");
+        boolean isAppendedIban;
+        if (!isAppendedUnp) {
+            isAppendedIban = appendParameter(
+                    isAppendedName, ibanByByn, command, " l.ibanByByn like :ibanByByn"
+            );
+        } else {
+            isAppendedIban = appendParameter(
+                    true, ibanByByn, command, " l.ibanByByn like :ibanByByn"
+            );
+        }
+        Query query = em.createQuery(command.toString());
+        if (isAppendedName) {
+            query.setParameter("name", name + "%");
+        }
+        if (isAppendedUnp) {
+            query.setParameter("unp", unp + "%");
+        }
+        if (isAppendedIban) {
+            query.setParameter("ibanByByn", ibanByByn + "%");
+        }
+        try {
+            return (List<LegalEntity>) query.getResultList();
+        } catch (NoResultException e) {
+            return Collections.emptyList();
+        }
+    }
+
+    private boolean appendParameter(Boolean isAppended, String field, StringBuilder command, String appendString) {
+        if (field != null) {
+            if (!isAppended) {
+                command.append(" where");
+            } else {
+                command.append(" and");
+            }
+            command.append(appendString);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

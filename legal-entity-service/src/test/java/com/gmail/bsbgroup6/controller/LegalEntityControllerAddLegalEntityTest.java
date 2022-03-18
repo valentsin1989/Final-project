@@ -8,6 +8,7 @@ import com.gmail.bsbgroup6.security.util.JwtUtils;
 import com.gmail.bsbgroup6.service.LegalEntityService;
 import com.gmail.bsbgroup6.service.model.AddLegalEntityDTO;
 import com.gmail.bsbgroup6.service.model.LegalEntityDTO;
+import com.gmail.bsbgroup6.service.model.LegalTypeEnum;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,7 +56,7 @@ class LegalEntityControllerAddLegalEntityTest {
                 "Test Name",
                 123456789,
                 "BY00UNBS00000000000000000000",
-                true,
+                LegalTypeEnum.RESIDENT,
                 100
         );
         LegalEntityDTO legalEntityDTO = new LegalEntityDTO();
@@ -105,7 +106,7 @@ class LegalEntityControllerAddLegalEntityTest {
                 "Test Name",
                 123456789,
                 "BY00UNBS00000000000000000000",
-                true,
+                LegalTypeEnum.RESIDENT,
                 100
         );
 
@@ -131,7 +132,7 @@ class LegalEntityControllerAddLegalEntityTest {
                 " ",
                 123456789,
                 "BY00UNBS00000000000000000000",
-                true,
+                LegalTypeEnum.RESIDENT,
                 100
         );
 
@@ -155,7 +156,7 @@ class LegalEntityControllerAddLegalEntityTest {
                 null,
                 123456789,
                 "BY00UNBS00000000000000000000",
-                true,
+                LegalTypeEnum.RESIDENT,
                 100
         );
 
@@ -182,7 +183,7 @@ class LegalEntityControllerAddLegalEntityTest {
                         "Test Name Test Name Test Name Test Name Test Name",
                 123456789,
                 "BY00UNBS00000000000000000000",
-                true,
+                LegalTypeEnum.RESIDENT,
                 100
         );
 
@@ -206,7 +207,7 @@ class LegalEntityControllerAddLegalEntityTest {
                 "Test Name",
                 12345678,
                 "BY00UNBS00000000000000000000",
-                true,
+                LegalTypeEnum.RESIDENT,
                 100
         );
 
@@ -230,7 +231,7 @@ class LegalEntityControllerAddLegalEntityTest {
                 "Test Name",
                 1234567891,
                 "BY00UNBS00000000000000000000",
-                true,
+                LegalTypeEnum.RESIDENT,
                 100
         );
 
@@ -254,7 +255,7 @@ class LegalEntityControllerAddLegalEntityTest {
                 "Test Name",
                 123456789,
                 " ",
-                true,
+                LegalTypeEnum.RESIDENT,
                 100
         );
 
@@ -278,7 +279,7 @@ class LegalEntityControllerAddLegalEntityTest {
                 "Test Name",
                 123456789,
                 null,
-                true,
+                LegalTypeEnum.RESIDENT,
                 100
         );
 
@@ -302,7 +303,7 @@ class LegalEntityControllerAddLegalEntityTest {
                 "Test Name",
                 123456789,
                 "BY00UNBS0000000000000000000",
-                true,
+                LegalTypeEnum.RESIDENT,
                 100
         );
 
@@ -326,7 +327,7 @@ class LegalEntityControllerAddLegalEntityTest {
                 "Test Name",
                 123456789,
                 "BY00UNBS000000000000000000000",
-                true,
+                LegalTypeEnum.RESIDENT,
                 100
         );
 
@@ -350,7 +351,7 @@ class LegalEntityControllerAddLegalEntityTest {
                 "Test Name",
                 123456789,
                 "RU00UNBS00000000000000000000",
-                true,
+                LegalTypeEnum.RESIDENT,
                 100
         );
 
@@ -374,7 +375,7 @@ class LegalEntityControllerAddLegalEntityTest {
                 "Test Name",
                 123456789,
                 "BY00UNBS00000000000000000000",
-                true,
+                LegalTypeEnum.RESIDENT,
                 10000
         );
 
@@ -398,7 +399,7 @@ class LegalEntityControllerAddLegalEntityTest {
                 "Test Name",
                 123456789,
                 "BY00UNBS00000000000000000000",
-                true,
+                LegalTypeEnum.RESIDENT,
                 1000
         );
 
@@ -415,7 +416,7 @@ class LegalEntityControllerAddLegalEntityTest {
                 "Test Name",
                 123456789,
                 "BY00UNBS00000000000000000000",
-                true,
+                LegalTypeEnum.RESIDENT,
                 100
         );
         LegalEntityDTO legalEntityDTO = new LegalEntityDTO();

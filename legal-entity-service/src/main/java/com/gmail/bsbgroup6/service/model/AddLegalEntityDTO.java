@@ -30,7 +30,7 @@ public class AddLegalEntityDTO {
     private final String ibanByByn;
 
     @JsonProperty("Type_Legal")
-    private final Boolean type;
+    private final LegalTypeEnum type;
 
     @Max(value = 1000, message = "Неверно заданы параметры")
     @JsonProperty("Total_Employees")

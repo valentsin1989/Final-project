@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class PaginationLegalEntityDTO {
-    Boolean pagination;
+    PaginationEnum pagination;
     Integer page;
     Integer customizedPage;
 }

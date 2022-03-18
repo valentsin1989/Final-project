@@ -2,7 +2,6 @@ package com.gmail.bsbgroup6.service.converter;
 
 import com.gmail.bsbgroup6.repository.model.LegalEntity;
 import com.gmail.bsbgroup6.repository.model.LegalEntityDates;
-import com.gmail.bsbgroup6.repository.model.LegalTypeEnum;
 import com.gmail.bsbgroup6.service.model.AddLegalEntityDTO;
 import com.gmail.bsbgroup6.service.model.LegalEntityDTO;
 import lombok.AllArgsConstructor;
@@ -28,12 +27,8 @@ public class LegalEntityConverter {
         legalEntity.setUnp(unp);
         String IBANbyBYN = legalEntityDTO.getIbanByByn();
         legalEntity.setIbanByByn(IBANbyBYN);
-        Boolean type = legalEntityDTO.getType();
-        if (type) {
-            legalEntity.setType(LegalTypeEnum.RESIDENT.name());
-        } else {
-            legalEntity.setType(LegalTypeEnum.NO_RESIDENT.name());
-        }
+        String legalType = legalEntityDTO.getType().toString();
+        legalEntity.setType(legalType);
         Integer totalEmployees = legalEntityDTO.getTotalEmployees();
         legalEntity.setTotalEmployees(totalEmployees);
         return legalEntity;

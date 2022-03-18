@@ -4,6 +4,8 @@ import com.gmail.bsbgroup6.repository.LegalEntityDatesRepository;
 import com.gmail.bsbgroup6.repository.LegalEntityRepository;
 import com.gmail.bsbgroup6.repository.model.LegalEntity;
 import com.gmail.bsbgroup6.repository.model.LegalEntityDates;
+import com.gmail.bsbgroup6.repository.model.LegalSearch;
+import com.gmail.bsbgroup6.repository.model.Pagination;
 import com.gmail.bsbgroup6.service.LegalEntityService;
 import com.gmail.bsbgroup6.service.converter.LegalEntityConverter;
 import com.gmail.bsbgroup6.service.exception.ServiceException;
@@ -47,29 +49,44 @@ public class LegalEntityServiceImpl implements LegalEntityService {
     @Override
     @Transactional
     public List<LegalEntityDTO> getByPagination(PaginationLegalEntityDTO legalEntityDTO) {
-        Boolean pagination = legalEntityDTO.getPagination();
-        Integer customizedPage = legalEntityDTO.getCustomizedPage();
-        int maxResult;
-        if (pagination) {
-            maxResult = DEFAULT_COUNT_OF_ENTITIES_PER_PAGE;
-        } else {
-            maxResult = customizedPage;
-        }
-        Integer page = legalEntityDTO.getPage();
-        List<LegalEntity> legalEntities = legalEntityRepository.findByPagination(page, maxResult);
-        if (legalEntities == null) {
-            throw new ServiceException("Legal entities are not found.");
+        List<LegalEntity> legalEntities;
+        switch (legalEntityDTO.getPagination()) {
+            case DEFAULT: {
+                Pagination pagination = new Pagination();
+                pagination.setPage(legalEntityDTO.getPage());
+                pagination.setMaxResult(DEFAULT_COUNT_OF_ENTITIES_PER_PAGE);
+                legalEntities = legalEntityRepository.findByPagination(pagination);
+                break;
+            }
+            case CUSTOMED: {
+                Pagination pagination = new Pagination();
+                pagination.setPage(legalEntityDTO.getPage());
+                pagination.setMaxResult(legalEntityDTO.getCustomizedPage());
+                legalEntities = legalEntityRepository.findByPagination(pagination);
+                break;
+            }
+            default: {
+                throw new ServiceException("Legal entities are not found.");
+            }
         }
         return legalEntityConverter.convertToListLegalEntityDTO(legalEntities);
     }
 
     @Override
-    public List<LegalEntityDTO> getLegalEntitiesByParameters(SearchLegalEntityDTO legalEntityDTO) {
+    @Transactional
+    public List<LegalEntityDTO> getByParameters(SearchLegalEntityDTO legalEntityDTO) {
         String name = legalEntityDTO.getName();
         Integer unp = legalEntityDTO.getUnp();
-        String UNP = unp.toString();
+        String UNP = null;
+        if (unp != null) {
+            UNP = unp.toString();
+        }
         String ibanByByn = legalEntityDTO.getIbanByByn();
-        List<LegalEntity> legalEntities = legalEntityRepository.findByParameters(name, UNP, ibanByByn);
+        LegalSearch legalSearch = new LegalSearch();
+        legalSearch.setName(name);
+        legalSearch.setUnp(UNP);
+        legalSearch.setIbanByByn(ibanByByn);
+        List<LegalEntity> legalEntities = legalEntityRepository.findByParameters(legalSearch);
         return legalEntities.stream()
                 .map(legalEntityConverter::convertToLegalEntityDTO)
                 .collect(Collectors.toList());

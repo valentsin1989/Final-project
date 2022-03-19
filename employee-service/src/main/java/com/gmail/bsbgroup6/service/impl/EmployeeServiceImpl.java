@@ -18,8 +18,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeConverter employeeConverter;
 
     @Override
-    public AddedEmployeeDTO add(AddEmployeeDTO employeeDTO) {
-        Employee employee = employeeConverter.convertToEmployee(employeeDTO);
+    public AddedEmployeeDTO add(AddEmployeeDTO employeeDTO, String token) {
+        Employee employee = employeeConverter.convertToEmployee(employeeDTO, token);
         employeeRepository.add(employee);
         Long id = employee.getId();
         if (id == null) {

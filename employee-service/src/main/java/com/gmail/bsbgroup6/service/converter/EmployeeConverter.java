@@ -16,7 +16,7 @@ public class EmployeeConverter {
         this.legalServiceRepository = legalServiceRepository;
     }
 
-    public Employee convertToEmployee(AddEmployeeDTO addEmployeeDTO) {
+    public Employee convertToEmployee(AddEmployeeDTO addEmployeeDTO, String token) {
         Employee employee = new Employee();
         String fullName = addEmployeeDTO.getFullName();
         employee.setFullName(fullName);
@@ -25,7 +25,7 @@ public class EmployeeConverter {
         String terminationDate = addEmployeeDTO.getTerminationDate();
         employee.setTerminationDate(terminationDate);
         String legalEntityName = addEmployeeDTO.getLegalEntityName();
-        LegalEntityDTO legalEntityDTO = legalServiceRepository.getLegalByName(legalEntityName);
+        LegalEntityDTO legalEntityDTO = legalServiceRepository.getLegalByName(legalEntityName, token);
         Long legalId = legalEntityDTO.getId();
         employee.setLegalEntityId(legalId);
         String personIbanByn = addEmployeeDTO.getPersonIbanByn();

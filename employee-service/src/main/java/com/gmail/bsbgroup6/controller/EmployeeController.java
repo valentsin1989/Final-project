@@ -10,11 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -27,8 +23,11 @@ public class EmployeeController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('ROLE_USER')")
-    public ResponseEntity<Object> addLegalEntity(@Validated @RequestBody AddEmployeeDTO employeeDTO) {
-        AddedEmployeeDTO addedEmployeeDTO = employeeService.add(employeeDTO);
+    public ResponseEntity<Object> addLegalEntity(
+            @Validated @RequestBody AddEmployeeDTO employeeDTO,
+            @RequestHeader(value = "Authorization") String token
+    ) {
+        AddedEmployeeDTO addedEmployeeDTO = employeeService.add(employeeDTO, token);
         return ResponseEntity.status(HttpStatus.CREATED).body(addedEmployeeDTO);
     }
 }

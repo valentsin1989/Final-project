@@ -17,7 +17,7 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Entity
-@Table(name = "legal_entity_dates")
+@Table(name = "employee_details")
 public class EmployeeDetails {
 
     @GenericGenerator(

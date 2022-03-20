@@ -2,21 +2,22 @@ package com.gmail.bsbgroup6.service.impl;
 
 import com.gmail.bsbgroup6.repository.EmployeeDetailsRepository;
 import com.gmail.bsbgroup6.repository.EmployeeRepository;
+import com.gmail.bsbgroup6.repository.LegalServiceRepository;
 import com.gmail.bsbgroup6.repository.model.Employee;
 import com.gmail.bsbgroup6.repository.model.EmployeeDetails;
 import com.gmail.bsbgroup6.repository.model.Pagination;
 import com.gmail.bsbgroup6.service.EmployeeService;
 import com.gmail.bsbgroup6.service.converter.EmployeeConverter;
 import com.gmail.bsbgroup6.service.exception.ServiceException;
-import com.gmail.bsbgroup6.service.model.AddEmployeeDTO;
-import com.gmail.bsbgroup6.service.model.AddedEmployeeDTO;
-import com.gmail.bsbgroup6.service.model.EmployeeDTO;
-import com.gmail.bsbgroup6.service.model.PaginationEmployeeDTO;
+import com.gmail.bsbgroup6.service.model.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -26,6 +27,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final EmployeeDetailsRepository employeeDetailsRepository;
     private final EmployeeConverter employeeConverter;
+    private final LegalServiceRepository legalServiceRepository;
 
     @Override
     @Transactional
@@ -77,4 +79,31 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         return employeeConverter.convertToEmployeeDTO(employee, token);
     }
+
+    @Override
+    @Transactional
+    public List<GetEmployeeDTO> getByParameters(SearchEmployeeDTO searchEmployeeDTO, String token) {
+        String fullName = searchEmployeeDTO.getFullName();
+        List<Employee> employees = employeeRepository.findByFullName(fullName);
+        if (employees.isEmpty()){
+            return Collections.emptyList();
+        }
+        String legalEntityName = searchEmployeeDTO.getLegalEntityName();
+        Integer unp = searchEmployeeDTO.getUnp();
+        String unpString = null;
+        if (unp != null) {
+            unpString = unp.toString();
+        }
+        List<LegalEntityDTO> legals = legalServiceRepository.getLegalByNameAndUnp(legalEntityName, unpString, token);
+        List<GetEmployeeDTO> getEmployeeDTOs = new ArrayList<>();
+        for(LegalEntityDTO legal : legals) {
+            String legalName = legal.getName();
+            getEmployeeDTOs = employees.stream()
+                    .filter(employee -> employee.getLegalEntityId().equals(legal.getId()))
+                    .map(employee->employeeConverter.convertToGetEmployeeDTO(employee, legalName))
+                    .collect(Collectors.toList());
+        }
+        return getEmployeeDTOs;
+    }
+
 }

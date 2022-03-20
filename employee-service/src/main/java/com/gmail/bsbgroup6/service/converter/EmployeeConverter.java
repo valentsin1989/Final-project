@@ -4,10 +4,7 @@ import com.gmail.bsbgroup6.repository.LegalServiceRepository;
 import com.gmail.bsbgroup6.repository.model.Employee;
 import com.gmail.bsbgroup6.repository.model.EmployeeDetails;
 import com.gmail.bsbgroup6.repository.model.PositionByLegalEnum;
-import com.gmail.bsbgroup6.service.model.AddEmployeeDTO;
-import com.gmail.bsbgroup6.service.model.AddedEmployeeDTO;
-import com.gmail.bsbgroup6.service.model.EmployeeDTO;
-import com.gmail.bsbgroup6.service.model.LegalEntityDTO;
+import com.gmail.bsbgroup6.service.model.*;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -92,5 +89,21 @@ public class EmployeeConverter {
         return employees.stream()
                 .map((Employee employee) -> convertToEmployeeDTO(employee, token))
                 .collect(Collectors.toList());
+    }
+
+    public GetEmployeeDTO convertToGetEmployeeDTO(Employee employee, String legalEntityName) {
+        Long id = employee.getId();
+        String recruitmentDate = employee.getRecruitmentDate();
+        String terminationDate = employee.getTerminationDate();
+        String personIbanByn = employee.getPersonIbanByn();
+        String personIbanCurrency = employee.getPersonIbanCurrency();
+        return new GetEmployeeDTO(
+                id,
+                recruitmentDate,
+                terminationDate,
+                legalEntityName,
+                personIbanByn,
+                personIbanCurrency
+        );
     }
 }

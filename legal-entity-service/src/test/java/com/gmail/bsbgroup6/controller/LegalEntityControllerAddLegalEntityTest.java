@@ -3,7 +3,7 @@ package com.gmail.bsbgroup6.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmail.bsbgroup6.controller.validator.LegalEntityValidator;
 import com.gmail.bsbgroup6.errors.AuthEntryPointJwt;
-import com.gmail.bsbgroup6.repository.EmployeeServiceRepository;
+import com.gmail.bsbgroup6.repository.AuthenticationServiceRepository;
 import com.gmail.bsbgroup6.security.util.JwtUtils;
 import com.gmail.bsbgroup6.service.LegalEntityService;
 import com.gmail.bsbgroup6.service.model.AddLegalEntityDTO;
@@ -47,7 +47,7 @@ class LegalEntityControllerAddLegalEntityTest {
     @MockBean
     private LegalEntityValidator legalEntityValidator;
     @MockBean
-    private EmployeeServiceRepository employeeServiceRepository;
+    private AuthenticationServiceRepository employeeServiceRepository;
 
     @WithMockUser(roles = {"USER"})
     @Test

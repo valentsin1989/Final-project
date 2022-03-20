@@ -85,7 +85,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public List<GetEmployeeDTO> getByParameters(SearchEmployeeDTO searchEmployeeDTO, String token) {
         String fullName = searchEmployeeDTO.getFullName();
         List<Employee> employees = employeeRepository.findByFullName(fullName);
-        if (employees.isEmpty()){
+        if (employees.isEmpty()) {
             return Collections.emptyList();
         }
         String legalEntityName = searchEmployeeDTO.getLegalEntityName();
@@ -96,14 +96,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         List<LegalEntityDTO> legals = legalServiceRepository.getLegalByNameAndUnp(legalEntityName, unpString, token);
         List<GetEmployeeDTO> getEmployeeDTOs = new ArrayList<>();
-        for(LegalEntityDTO legal : legals) {
+        for (LegalEntityDTO legal : legals) {
             String legalName = legal.getName();
             getEmployeeDTOs = employees.stream()
                     .filter(employee -> employee.getLegalEntityId().equals(legal.getId()))
-                    .map(employee->employeeConverter.convertToGetEmployeeDTO(employee, legalName))
+                    .map(employee -> employeeConverter.convertToGetEmployeeDTO(employee, legalName))
                     .collect(Collectors.toList());
         }
         return getEmployeeDTOs;
     }
-
 }

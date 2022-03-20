@@ -1,6 +1,6 @@
 package com.gmail.bsbgroup6.security.filter;
 
-import com.gmail.bsbgroup6.repository.EmployeeServiceRepository;
+import com.gmail.bsbgroup6.repository.AuthenticationServiceRepository;
 import com.gmail.bsbgroup6.security.util.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +22,11 @@ import java.util.Collection;
 
 @Slf4j
 public class AuthTokenFilter extends OncePerRequestFilter {
+
     @Autowired
     private JwtUtils jwtUtils;
     @Autowired
-    private EmployeeServiceRepository employeeServiceRepository;
+    private AuthenticationServiceRepository authServiceRepository;
 
     @Override
     protected void doFilterInternal(
@@ -36,7 +37,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         try {
             String jwt = parseJwt(request);
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                String tokenStatus = employeeServiceRepository.getStatusToken(request.getHeader("Authorization"));
+                String tokenStatus = authServiceRepository.getStatusToken(request.getHeader("Authorization"));
                 if (tokenStatus.equals("ENABLE")) {
                     Collection<GrantedAuthority> authorities = new ArrayList<>();
                     authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
@@ -58,7 +59,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private String parseJwt(HttpServletRequest request) {
         String headerAuth = request.getHeader("Authorization");
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-            return headerAuth.substring("Bearer " .length());
+            return headerAuth.substring("Bearer ".length());
         }
         return null;
     }

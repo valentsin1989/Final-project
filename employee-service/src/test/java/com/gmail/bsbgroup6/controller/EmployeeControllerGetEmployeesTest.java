@@ -7,8 +7,10 @@ import com.gmail.bsbgroup6.repository.LegalServiceRepository;
 import com.gmail.bsbgroup6.security.util.JwtUtils;
 import com.gmail.bsbgroup6.service.EmployeeService;
 import com.gmail.bsbgroup6.service.model.EmployeeDTO;
+import com.gmail.bsbgroup6.service.model.GetEmployeeDTO;
 import com.gmail.bsbgroup6.service.model.PaginationEmployeeDTO;
 import com.gmail.bsbgroup6.service.model.PaginationEnum;
+import com.gmail.bsbgroup6.service.model.SearchEmployeeDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -171,6 +173,143 @@ class EmployeeControllerGetEmployeesTest {
 
     @WithMockUser(roles = {"USER"})
     @Test
+    void shouldReturn200WhenWeGetEmployeeByLegalEntityNameAndUnpAndEmployeeFullName() throws Exception {
+        String token = "TestToken";
+        SearchEmployeeDTO searchEmployeeDTO = new SearchEmployeeDTO();
+        searchEmployeeDTO.setLegalEntityName("Name");
+        searchEmployeeDTO.setUnp(100);
+        searchEmployeeDTO.setFullName("Test Name");
+        List<GetEmployeeDTO> employees = IntStream.rangeClosed(1, 5)
+                .mapToObj(this::getEmployeeDTO)
+                .collect(Collectors.toList());
+
+        when(employeeService.getByParameters(searchEmployeeDTO, token)).thenReturn(employees);
+
+        mockMvc.perform(get("/api/employees")
+                        .param("Name_Legal", "Name")
+                        .param("UNP", String.valueOf(100))
+                        .param("Full_Name_Individual", "Test Name")
+                        .header("Authorization", token))
+                .andExpect(status().isOk());
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    void shouldReturn200WhenWeGetEmployeeByLegalEntityNameAndEmployeeFullName() throws Exception {
+        String token = "TestToken";
+        SearchEmployeeDTO searchEmployeeDTO = new SearchEmployeeDTO();
+        searchEmployeeDTO.setLegalEntityName("Name");
+        searchEmployeeDTO.setFullName("Test Name");
+        List<GetEmployeeDTO> employees = IntStream.rangeClosed(1, 5)
+                .mapToObj(this::getEmployeeDTO)
+                .collect(Collectors.toList());
+
+        when(employeeService.getByParameters(searchEmployeeDTO, token)).thenReturn(employees);
+
+        mockMvc.perform(get("/api/employees")
+                        .param("Name_Legal", "Name")
+                        .param("Full_Name_Individual", "Test Name")
+                        .header("Authorization", token))
+                .andExpect(status().isOk());
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    void shouldReturn200WhenWeGetEmployeeByUnpAndEmployeeFullName() throws Exception {
+        String token = "TestToken";
+        SearchEmployeeDTO searchEmployeeDTO = new SearchEmployeeDTO();
+        searchEmployeeDTO.setUnp(100);
+        searchEmployeeDTO.setFullName("Test Name");
+        List<GetEmployeeDTO> employees = IntStream.rangeClosed(1, 5)
+                .mapToObj(this::getEmployeeDTO)
+                .collect(Collectors.toList());
+
+        when(employeeService.getByParameters(searchEmployeeDTO, token)).thenReturn(employees);
+
+        mockMvc.perform(get("/api/employees")
+                        .param("UNP", String.valueOf(100))
+                        .param("Full_Name_Individual", "Test Name")
+                        .header("Authorization", token))
+                .andExpect(status().isOk());
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    void shouldMapToBusinessModelWhenSearchedEmployeesAreInDatabase() throws Exception {
+        String token = "TestToken";
+        SearchEmployeeDTO searchEmployeeDTO = new SearchEmployeeDTO();
+        searchEmployeeDTO.setLegalEntityName("Name");
+        searchEmployeeDTO.setUnp(100);
+        searchEmployeeDTO.setFullName("Test Name");
+        List<GetEmployeeDTO> employees = IntStream.rangeClosed(1, 5)
+                .mapToObj(this::getEmployeeDTO)
+                .collect(Collectors.toList());
+
+        when(employeeService.getByParameters(searchEmployeeDTO, token)).thenReturn(employees);
+
+        MvcResult mvcResult = mockMvc.perform(get("/api/employees")
+                        .param("Name_Legal", "Name")
+                        .param("UNP", String.valueOf(100))
+                        .param("Full_Name_Individual", "Test Name")
+                        .header("Authorization", token))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        verify(employeeService, times(1)).getByParameters(searchEmployeeDTO, token);
+        String actualResponseBody = mvcResult.getResponse().getContentAsString();
+        List<GetEmployeeDTO> result = objectMapper.readValue(actualResponseBody,
+                objectMapper.getTypeFactory().constructCollectionType(List.class, GetEmployeeDTO.class));
+        Assertions.assertEquals(employees, result);
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    void shouldReturn401WhenSearchedEmployeeIsNotFound() throws Exception {
+        String token = "TestToken";
+        SearchEmployeeDTO searchEmployeeDTO = new SearchEmployeeDTO();
+        searchEmployeeDTO.setLegalEntityName("Name");
+        searchEmployeeDTO.setUnp(100);
+        searchEmployeeDTO.setFullName("Test Name");
+        List<GetEmployeeDTO> employees = Collections.emptyList();
+
+        when(employeeService.getByParameters(searchEmployeeDTO, token)).thenReturn(employees);
+
+        mockMvc.perform(get("/api/employees")
+                        .param("Name_Legal", "Name")
+                        .param("UNP", String.valueOf(100))
+                        .param("Full_Name_Individual", "Test Name")
+                        .header("Authorization", token))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    void shouldReturnErrorMessageWhenSearchedEmployeeIsNotFound() throws Exception {
+        String token = "TestToken";
+        SearchEmployeeDTO searchEmployeeDTO = new SearchEmployeeDTO();
+        searchEmployeeDTO.setLegalEntityName("Name");
+        searchEmployeeDTO.setUnp(100);
+        searchEmployeeDTO.setFullName("Test Name");
+        List<GetEmployeeDTO> employees = Collections.emptyList();
+
+        when(employeeService.getByParameters(searchEmployeeDTO, token)).thenReturn(employees);
+
+        MvcResult mvcResult = mockMvc.perform(get("/api/employees")
+                        .param("Name_Legal", "Name")
+                        .param("UNP", String.valueOf(100))
+                        .param("Full_Name_Individual", "Test Name")
+                        .header("Authorization", token))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+
+        verify(employeeService, times(1)).getByParameters(searchEmployeeDTO, token);
+        String actualResponseBody = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
+        String expectedResult = "Сотрудник не найден, измените параметры поиска";
+        Assertions.assertEquals(expectedResult, actualResponseBody);
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
     void shouldReturn404WhenWeGetEmployeesWithUnsupportedURL() throws Exception {
         mockMvc.perform(get("/api/employeess"))
                 .andExpect(status().isNotFound());
@@ -180,6 +319,17 @@ class EmployeeControllerGetEmployeesTest {
         return new EmployeeDTO(
                 1L + count,
                 "Test Employee Name" + count,
+                "20/03/2020",
+                "20/03/2022",
+                "Test Legal Name",
+                "BY11UNBS0000000000000000000" + count,
+                "BY12UNBS0000000000000000000" + count
+        );
+    }
+
+    private GetEmployeeDTO getEmployeeDTO(int count) {
+        return new GetEmployeeDTO(
+                1L + count,
                 "20/03/2020",
                 "20/03/2022",
                 "Test Legal Name",

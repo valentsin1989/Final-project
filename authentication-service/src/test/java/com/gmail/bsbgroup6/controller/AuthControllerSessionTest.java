@@ -63,22 +63,6 @@ class AuthControllerSessionTest {
         Assertions.assertEquals("DISABLE", actualResponse);
     }
 
-/*    @Test
-    void shouldReturn200WhenWeGetStatusSessionWithHttpHeaders() throws Exception {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        String jwtToken = "jwtToken";
-        httpHeaders.setBearerAuth(jwtToken);
-        when(jwtUtils.parseJwtFromHeaders(httpHeaders)).thenReturn(jwtToken);
-        when(jwtUtils.validateJwtToken(jwtToken)).thenReturn(true);
-        when(sessionService.isActiveSession(jwtToken)).thenReturn(true);
-        MvcResult mvcResult = mockMvc.perform(post("/api/auth/session")
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(httpHeaders)))
-                .andExpect(status().isOk()).andReturn();
-        String actualResponse = mvcResult.getResponse().getContentAsString();
-        Assertions.assertEquals("ENABLE", actualResponse);
-    }*/
-
     @Test
     void shouldReturn415WhenWeGetStatusSessionWithXmlContentType() throws Exception {
         mockMvc.perform(post("/api/auth/session")
@@ -99,6 +83,5 @@ class AuthControllerSessionTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isMethodNotAllowed());
     }
-
 }
 

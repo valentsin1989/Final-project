@@ -1,6 +1,5 @@
 package com.gmail.bsbgroup6.repository.impl;
 
-
 import com.gmail.bsbgroup6.repository.GenericRepository;
 
 import javax.persistence.EntityManager;

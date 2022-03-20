@@ -84,7 +84,7 @@ public class AuthController {
         if (username != null && userMail != null) {
             return ResponseEntity
                     .status(400)
-                    .body(Map.of("message", "Either username or password must be entered"));
+                    .body(Map.of("message", "Either username or email must be entered"));
         }
         Long userId = userValidator.validationUser(loginDTO);
         if (userId != null) {

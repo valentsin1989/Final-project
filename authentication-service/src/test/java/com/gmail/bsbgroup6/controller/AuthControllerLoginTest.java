@@ -24,7 +24,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 @Slf4j
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = AuthController.class)
@@ -55,7 +54,7 @@ class AuthControllerLoginTest {
                         .content(objectMapper.writeValueAsString(loginDTO)))
                 .andExpect(status().isBadRequest()).andReturn();
         String actualResponse = mvcResult.getResponse().getContentAsString();
-        Assertions.assertTrue(actualResponse.contains("Either username or password must be entered"));
+        Assertions.assertTrue(actualResponse.contains("Either username or email must be entered"));
     }
 
     @Test

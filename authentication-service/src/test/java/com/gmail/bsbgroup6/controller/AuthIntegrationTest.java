@@ -30,7 +30,6 @@ class AuthIntegrationTest extends BaseIT {
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + jwtUtils.generateJwtToken());
 
-
         HttpEntity<Object> entity = new HttpEntity<>(null, headers);
 
         ResponseEntity<String> response = restTemplate.exchange(

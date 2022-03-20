@@ -56,11 +56,11 @@ public class UserRepositoryImpl extends GenericRepositoryImpl<Long, User> implem
     public Optional<User> findUserByNameOrMail(String username, String userMail) {
         StringBuilder queryString = new StringBuilder("select u from User as u");
         Query query;
-        if (username != null){
+        if (username != null) {
             queryString.append(" where u.username=:username");
             query = em.createQuery(queryString.toString());
             query.setParameter("username", username);
-        }else {
+        } else {
             queryString.append(" where u.mail=:mail");
             query = em.createQuery(queryString.toString());
             query.setParameter("mail", userMail);

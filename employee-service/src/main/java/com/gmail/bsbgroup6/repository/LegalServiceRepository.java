@@ -20,4 +20,11 @@ public interface LegalServiceRepository {
             @PathVariable Long LegalId,
             @RequestHeader(value = "Authorization") String token
     );
+
+    @GetMapping(value = "/api/legals")
+    List<LegalEntityDTO> getLegalByNameAndUnp(
+            @RequestParam(name = "Name_Legal") String name,
+            @RequestParam(name = "UNP") String unp,
+            @RequestHeader(value = "Authorization") String token
+    );
 }

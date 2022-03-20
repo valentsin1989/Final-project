@@ -1,11 +1,7 @@
 package com.gmail.bsbgroup6.controller;
 
 import com.gmail.bsbgroup6.service.EmployeeService;
-import com.gmail.bsbgroup6.service.model.AddEmployeeDTO;
-import com.gmail.bsbgroup6.service.model.AddedEmployeeDTO;
-import com.gmail.bsbgroup6.service.model.EmployeeDTO;
-import com.gmail.bsbgroup6.service.model.PaginationEmployeeDTO;
-import com.gmail.bsbgroup6.service.model.PaginationEnum;
+import com.gmail.bsbgroup6.service.model.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -42,7 +38,7 @@ public class EmployeeController {
             @RequestParam(name = "pagination", required = false) PaginationEnum pagination,
             @RequestParam(name = "page", required = false) Integer page,
             @RequestParam(name = "customized_page", required = false) Integer customizedPage,
-            @RequestParam(name = "Name_Legal", required = false) String name,
+            @RequestParam(name = "Name_Legal", required = false) String legalEntityName,
             @RequestParam(name = "UNP", required = false) Integer unp,
             @RequestParam(name = "Full_Name_Individual", required = false) String fullName,
             @RequestHeader(value = "Authorization") String token
@@ -59,7 +55,17 @@ public class EmployeeController {
             }
             return ResponseEntity.status(HttpStatus.OK).body(employees);
         }
-        return ResponseEntity.status(HttpStatus.OK).build();
+
+        SearchEmployeeDTO searchEmployeeDTO = new SearchEmployeeDTO();
+        searchEmployeeDTO.setLegalEntityName(legalEntityName);
+        searchEmployeeDTO.setUnp(unp);
+        searchEmployeeDTO.setFullName(fullName);
+        List<GetEmployeeDTO> employees = employeeService.getByParameters(searchEmployeeDTO, token);
+        if (employees.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Сотрудник не найден, измените параметры поиска");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(employees);
     }
 
     @GetMapping(value = "/{EmployeeId}")

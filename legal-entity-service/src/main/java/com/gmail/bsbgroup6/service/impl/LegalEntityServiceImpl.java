@@ -114,7 +114,7 @@ public class LegalEntityServiceImpl implements LegalEntityService {
 
     @Override
     @Transactional
-    public LegalEntityDTO getByUnp(Integer unp) {
+    public LegalEntityDTO getByUnp(String unp) {
         LegalEntity legalEntity = legalEntityRepository.findByUnp(unp).orElse(null);
         if (legalEntity == null) {
             return null;

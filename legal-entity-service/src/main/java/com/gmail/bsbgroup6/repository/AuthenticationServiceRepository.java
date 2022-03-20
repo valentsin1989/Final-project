@@ -2,13 +2,12 @@ package com.gmail.bsbgroup6.repository;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 @FeignClient(name = "${feign.name}", url = "${feign.url}")
-public interface EmployeeServiceRepository {
+public interface AuthenticationServiceRepository {
 
-        @PostMapping(value = "/api/auth/session", consumes = "application/json")
+        @PostMapping(value = "/api/auth/session", consumes = MediaType.APPLICATION_JSON_VALUE)
         String getStatusToken(@RequestHeader("Authorization") String token);
 }

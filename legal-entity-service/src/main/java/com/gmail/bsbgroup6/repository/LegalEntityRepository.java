@@ -11,7 +11,7 @@ public interface LegalEntityRepository extends GenericRepository<Long, LegalEnti
 
     Optional<LegalEntity> findByName(String name);
 
-    Optional<LegalEntity> findByUnp(Integer unp);
+    Optional<LegalEntity> findByUnp(String unp);
 
     Optional<LegalEntity> findByIbanByByn(String ibanByByn);
 

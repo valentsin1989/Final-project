@@ -31,7 +31,7 @@ public class LegalEntityRepositoryImpl extends GenericRepositoryImpl<Long, Legal
     }
 
     @Override
-    public Optional<LegalEntity> findByUnp(Integer unp) {
+    public Optional<LegalEntity> findByUnp(String unp) {
         String queryString = "select l from LegalEntity as l where l.unp=:unp";
         Query query = em.createQuery(queryString);
         query.setParameter("unp", unp);

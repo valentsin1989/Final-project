@@ -3,14 +3,12 @@ package com.gmail.bsbgroup6.repository.impl;
 import com.gmail.bsbgroup6.repository.EmployeeRepository;
 import com.gmail.bsbgroup6.repository.model.Employee;
 import com.gmail.bsbgroup6.repository.model.Pagination;
-import com.gmail.bsbgroup6.service.model.EmployeeDTO;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class EmployeeRepositoryImpl extends GenericRepositoryImpl<Long, Employee>
@@ -33,9 +31,9 @@ public class EmployeeRepositoryImpl extends GenericRepositoryImpl<Long, Employee
 
     @Override
     public List<Employee> findByFullName(String name) {
-        String queryString = "select e from Employee as e where e.full_name like :name";
+        String queryString = "select e from Employee as e where e.fullName like :name";
         Query query = em.createQuery(queryString);
-        query.setParameter("name", name);
+        query.setParameter("name", name + "%");
         try {
             return (List<Employee>) query.getResultList();
         } catch (NoResultException e) {

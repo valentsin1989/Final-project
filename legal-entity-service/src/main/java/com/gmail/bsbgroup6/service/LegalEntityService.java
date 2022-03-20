@@ -19,7 +19,7 @@ public interface LegalEntityService {
 
     LegalEntityDTO getByName(String name);
 
-    LegalEntityDTO getByUnp(Integer unp);
+    LegalEntityDTO getByUnp(String unp);
 
     LegalEntityDTO getByIbanByByn(String ibanByByn);
 }

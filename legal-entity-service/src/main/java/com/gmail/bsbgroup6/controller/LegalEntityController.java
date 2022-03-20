@@ -7,7 +7,6 @@ import com.gmail.bsbgroup6.service.model.PaginationEnum;
 import com.gmail.bsbgroup6.service.model.PaginationLegalEntityDTO;
 import com.gmail.bsbgroup6.service.model.SearchLegalEntityDTO;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Slf4j
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/legals")

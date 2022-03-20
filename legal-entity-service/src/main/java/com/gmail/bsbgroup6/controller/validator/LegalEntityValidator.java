@@ -15,18 +15,24 @@ public class LegalEntityValidator {
     public boolean isLegalEntityExists(AddLegalEntityDTO legalEntityDTO) {
         String name = legalEntityDTO.getName();
         Integer unp = legalEntityDTO.getUnp();
+        String UNP = null;
+        if (unp != null) {
+            UNP = unp.toString();
+        }
         String ibanByByn = legalEntityDTO.getIbanByByn();
         if (name != null) {
             LegalEntityDTO legalEntity = legalEntityService.getByName(name);
             if (legalEntity != null) {
                 return true;
             }
-        } else if (unp != null) {
-            LegalEntityDTO legalEntity = legalEntityService.getByUnp(unp);
+        }
+        if (unp != null) {
+            LegalEntityDTO legalEntity = legalEntityService.getByUnp(UNP);
             if (legalEntity != null) {
                 return true;
             }
-        } else if (ibanByByn != null) {
+        }
+        if (ibanByByn != null) {
             LegalEntityDTO legalEntity = legalEntityService.getByIbanByByn(ibanByByn);
             if (legalEntity != null) {
                 return true;

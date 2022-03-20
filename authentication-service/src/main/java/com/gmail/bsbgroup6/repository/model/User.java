@@ -61,5 +61,4 @@ public class User {
         listSession.add(session);
         session.setUser(this);
     }
-
 }

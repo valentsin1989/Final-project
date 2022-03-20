@@ -17,5 +17,4 @@ public interface UserService {
     AddedUserDTO addUser(AddUserDTO addUserDTO);
 
     boolean isBlockedUser(LoginDTO loginDTO);
-
 }

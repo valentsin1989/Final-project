@@ -27,10 +27,13 @@ public class EmployeeConverter {
         Employee employee = new Employee();
         String fullName = addEmployeeDTO.getFullName();
         employee.setFullName(fullName);
-        String recruitmentDate = addEmployeeDTO.getRecruitmentDate();
-        employee.setRecruitmentDate(recruitmentDate);
-        String terminationDate = addEmployeeDTO.getTerminationDate();
-        employee.setTerminationDate(terminationDate);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
+        LocalDate recruitmentDate = addEmployeeDTO.getRecruitmentDate();
+        String recruitmentDateAsString = dateTimeFormatter.format(recruitmentDate);
+        employee.setRecruitmentDate(recruitmentDateAsString);
+        LocalDate terminationDate = addEmployeeDTO.getTerminationDate();
+        String terminationDateAsString = dateTimeFormatter.format(terminationDate);
+        employee.setTerminationDate(terminationDateAsString);
         String legalEntityName = addEmployeeDTO.getLegalEntityName();
         List<LegalEntityDTO> legals = legalServiceRepository.getLegalByName(legalEntityName, token);
         LegalEntityDTO legalEntityDTO = legals.get(0);

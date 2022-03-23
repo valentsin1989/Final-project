@@ -17,7 +17,6 @@ public class BaseIT {
             .withUsername("foo")
             .withPassword("secret");
 
-
     @DynamicPropertySource
     static void redisProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", postgresqlContainer::getJdbcUrl);

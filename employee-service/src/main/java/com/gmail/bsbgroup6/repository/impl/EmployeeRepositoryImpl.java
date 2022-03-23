@@ -9,6 +9,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class EmployeeRepositoryImpl extends GenericRepositoryImpl<Long, Employee>
@@ -38,6 +39,48 @@ public class EmployeeRepositoryImpl extends GenericRepositoryImpl<Long, Employee
             return (List<Employee>) query.getResultList();
         } catch (NoResultException e) {
             return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public Optional<Employee> findByName(String fullName) {
+        String queryString = "select e from Employee as e where e.fullName=:fullName";
+        Query query = em.createQuery(queryString);
+        query.setParameter("fullName", fullName);
+        Employee employee;
+        try {
+            employee = (Employee) query.getSingleResult();
+            return Optional.of(employee);
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<Employee> findByPersonIbanByn(String personIbanByn) {
+        String queryString = "select e from Employee as e where e.personIbanByn=:personIbanByn";
+        Query query = em.createQuery(queryString);
+        query.setParameter("personIbanByn", personIbanByn);
+        Employee employee;
+        try {
+            employee = (Employee) query.getSingleResult();
+            return Optional.of(employee);
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<Employee> findByPersonIbanCurrency(String personIbanCurrency) {
+        String queryString = "select e from Employee as e where e.personIbanCurrency=:personIbanCurrency";
+        Query query = em.createQuery(queryString);
+        query.setParameter("personIbanCurrency", personIbanCurrency);
+        Employee employee;
+        try {
+            employee = (Employee) query.getSingleResult();
+            return Optional.of(employee);
+        } catch (NoResultException e) {
+            return Optional.empty();
         }
     }
 }

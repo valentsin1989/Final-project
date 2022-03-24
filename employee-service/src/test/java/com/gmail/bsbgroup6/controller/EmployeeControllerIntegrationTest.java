@@ -39,8 +39,8 @@ class EmployeeControllerIntegrationTest extends BaseIT {
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + token);
         AddEmployeeDTO addEmployeeDTO = new AddEmployeeDTO(
                 "Test Employee Name",
-                "20/03/2020",
-                "20/03/2022",
+                LocalDate.now().minusMonths(1),
+                LocalDate.now().plusMonths(1),
                 "TestLegalName",
                 "BY11UNBS00000000000000000000",
                 "BY12UNBS00000000000000000000"

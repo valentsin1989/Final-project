@@ -1,6 +1,7 @@
 package com.gmail.bsbgroup6.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gmail.bsbgroup6.controller.validator.EmployeeValidator;
 import com.gmail.bsbgroup6.errors.AuthEntryPointJwt;
 import com.gmail.bsbgroup6.repository.AuthServiceRepository;
 import com.gmail.bsbgroup6.repository.LegalServiceRepository;
@@ -21,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +49,8 @@ class EmployeeControllerAddEmployeeTest {
     private AuthServiceRepository authServiceRepository;
     @MockBean
     private LegalServiceRepository legalServiceRepository;
+    @MockBean
+    private EmployeeValidator employeeValidator;
 
     @WithMockUser(roles = {"USER"})
     @Test
@@ -54,8 +58,8 @@ class EmployeeControllerAddEmployeeTest {
         String token = "testToken";
         AddEmployeeDTO addEmployeeDTO = new AddEmployeeDTO(
                 "Test Employee Name",
-                "20/03/2020",
-                "20/03/2022",
+                LocalDate.now().minusMonths(1),
+                LocalDate.now().plusMonths(1),
                 "Test Legal Name",
                 "BY11UNBS00000000000000000000",
                 "BY12UNBS00000000000000000000"
@@ -98,12 +102,41 @@ class EmployeeControllerAddEmployeeTest {
 
     @WithMockUser(roles = {"USER"})
     @Test
+    void shouldReturn400WhenNotUniqueEmployeeInput() throws Exception {
+        String token = "testToken";
+        AddEmployeeDTO addEmployeeDTO = new AddEmployeeDTO(
+                "Test Employee Name",
+                LocalDate.now().minusMonths(1),
+                LocalDate.now().plusMonths(1),
+                "Test Legal Name",
+                "BY11UNBS00000000000000000000",
+                "BY12UNBS00000000000000000000"
+        );
+
+        when(employeeValidator.isEmployeeExists(addEmployeeDTO)).thenReturn(true);
+
+        MvcResult mvcResult = mockMvc.perform(post("/api/employees")
+                        .header("Authorization", token)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(addEmployeeDTO)))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        String actualResponseBody = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
+        Map<String, Object> map = objectMapper.readValue(actualResponseBody, Map.class);
+        List<String> errors = (List<String>) map.get("errors");
+        Assertions.assertEquals(1, errors.size());
+        Assertions.assertEquals("Сотрудник существует", errors.get(0));
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
     void shouldReturn400WhenWePostEmployeeWithEmptyFullName() throws Exception {
         String token = "testToken";
         AddEmployeeDTO addEmployeeDTO = new AddEmployeeDTO(
                 " ",
-                "20/03/2020",
-                "20/03/2022",
+                LocalDate.now().minusMonths(1),
+                LocalDate.now().plusMonths(1),
                 "Test Legal Name",
                 "BY11UNBS00000000000000000000",
                 "BY12UNBS00000000000000000000"
@@ -129,8 +162,8 @@ class EmployeeControllerAddEmployeeTest {
         String token = "testToken";
         AddEmployeeDTO addEmployeeDTO = new AddEmployeeDTO(
                 null,
-                "20/03/2020",
-                "20/03/2022",
+                LocalDate.now().minusMonths(1),
+                LocalDate.now().plusMonths(1),
                 "Test Legal Name",
                 "BY11UNBS00000000000000000000",
                 "BY12UNBS00000000000000000000"
@@ -159,8 +192,62 @@ class EmployeeControllerAddEmployeeTest {
                         "Test Employee Name Test Employee Name Test Employee Name Test Employee Name " +
                         "Test Employee Name Test Employee Name Test Employee Name Test Employee Name " +
                         "Test Employee Name Test Employee Name",
-                "20/03/2020",
-                "20/03/2022",
+                LocalDate.now().minusMonths(1),
+                LocalDate.now().plusMonths(1),
+                "Test Legal Name",
+                "BY11UNBS00000000000000000000",
+                "BY12UNBS00000000000000000000"
+        );
+
+        MvcResult mvcResult = mockMvc.perform(post("/api/employees")
+                        .header("Authorization", token)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(addEmployeeDTO)))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        String actualResponseBody = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
+        Map<String, Object> map = objectMapper.readValue(actualResponseBody, Map.class);
+        List<String> errors = (List<String>) map.get("errors");
+        Assertions.assertEquals(1, errors.size());
+        Assertions.assertEquals("Неверно заданы параметры", errors.get(0));
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    void shouldReturn400WhenWePostEmployeeWithRecruitmentDateInFuture() throws Exception {
+        String token = "testToken";
+        AddEmployeeDTO addEmployeeDTO = new AddEmployeeDTO(
+                "Test Employee Name",
+                LocalDate.now().plusMonths(1),
+                LocalDate.now().plusMonths(1),
+                "Test Legal Name",
+                "BY11UNBS00000000000000000000",
+                "BY12UNBS00000000000000000000"
+        );
+
+        MvcResult mvcResult = mockMvc.perform(post("/api/employees")
+                        .header("Authorization", token)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(addEmployeeDTO)))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        String actualResponseBody = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
+        Map<String, Object> map = objectMapper.readValue(actualResponseBody, Map.class);
+        List<String> errors = (List<String>) map.get("errors");
+        Assertions.assertEquals(1, errors.size());
+        Assertions.assertEquals("Неверно заданы параметры", errors.get(0));
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    void shouldReturn400WhenWePostEmployeeWithTerminationDateInPast() throws Exception {
+        String token = "testToken";
+        AddEmployeeDTO addEmployeeDTO = new AddEmployeeDTO(
+                "Test Employee Name",
+                LocalDate.now().minusMonths(1),
+                LocalDate.now().minusMonths(1),
                 "Test Legal Name",
                 "BY11UNBS00000000000000000000",
                 "BY12UNBS00000000000000000000"
@@ -186,8 +273,8 @@ class EmployeeControllerAddEmployeeTest {
         String token = "testToken";
         AddEmployeeDTO addEmployeeDTO = new AddEmployeeDTO(
                 "Test Employee Name",
-                "20/03/2020",
-                "20/03/2022",
+                LocalDate.now().minusMonths(1),
+                LocalDate.now().plusMonths(1),
                 "Test Legal Name",
                 " ",
                 "BY12UNBS00000000000000000000"
@@ -213,8 +300,8 @@ class EmployeeControllerAddEmployeeTest {
         String token = "testToken";
         AddEmployeeDTO addEmployeeDTO = new AddEmployeeDTO(
                 "Test Employee Name",
-                "20/03/2020",
-                "20/03/2022",
+                LocalDate.now().minusMonths(1),
+                LocalDate.now().plusMonths(1),
                 "Test Legal Name",
                 null,
                 "BY12UNBS00000000000000000000"
@@ -240,8 +327,8 @@ class EmployeeControllerAddEmployeeTest {
         String token = "testToken";
         AddEmployeeDTO addEmployeeDTO = new AddEmployeeDTO(
                 "Test Employee Name",
-                "20/03/2020",
-                "20/03/2022",
+                LocalDate.now().minusMonths(1),
+                LocalDate.now().plusMonths(1),
                 "Test Legal Name",
                 "BY11UNBS0000000000000000000",
                 "BY12UNBS00000000000000000000"
@@ -267,8 +354,8 @@ class EmployeeControllerAddEmployeeTest {
         String token = "testToken";
         AddEmployeeDTO addEmployeeDTO = new AddEmployeeDTO(
                 "Test Employee Name",
-                "20/03/2020",
-                "20/03/2022",
+                LocalDate.now().minusMonths(1),
+                LocalDate.now().plusMonths(1),
                 "Test Legal Name",
                 "BY11UNBS000000000000000000000",
                 "BY12UNBS00000000000000000000"
@@ -294,8 +381,8 @@ class EmployeeControllerAddEmployeeTest {
         String token = "testToken";
         AddEmployeeDTO addEmployeeDTO = new AddEmployeeDTO(
                 "Test Employee Name",
-                "20/03/2020",
-                "20/03/2022",
+                LocalDate.now().minusMonths(1),
+                LocalDate.now().plusMonths(1),
                 "Test Legal Name",
                 "RU11UNBS00000000000000000000",
                 "BY12UNBS00000000000000000000"
@@ -321,8 +408,8 @@ class EmployeeControllerAddEmployeeTest {
         String token = "testToken";
         AddEmployeeDTO addEmployeeDTO = new AddEmployeeDTO(
                 "Test Employee Name",
-                "20/03/2020",
-                "20/03/2022",
+                LocalDate.now().minusMonths(1),
+                LocalDate.now().plusMonths(1),
                 "Test Legal Name",
                 "BY12UNBS00000000000000000000",
                 " "
@@ -348,8 +435,8 @@ class EmployeeControllerAddEmployeeTest {
         String token = "testToken";
         AddEmployeeDTO addEmployeeDTO = new AddEmployeeDTO(
                 "Test Employee Name",
-                "20/03/2020",
-                "20/03/2022",
+                LocalDate.now().minusMonths(1),
+                LocalDate.now().plusMonths(1),
                 "Test Legal Name",
                 "BY12UNBS00000000000000000000",
                 null
@@ -375,8 +462,8 @@ class EmployeeControllerAddEmployeeTest {
         String token = "testToken";
         AddEmployeeDTO addEmployeeDTO = new AddEmployeeDTO(
                 "Test Employee Name",
-                "20/03/2020",
-                "20/03/2022",
+                LocalDate.now().minusMonths(1),
+                LocalDate.now().plusMonths(1),
                 "Test Legal Name",
                 "BY11UNBS00000000000000000000",
                 "BY12UNBS0000000000000000000"
@@ -402,8 +489,8 @@ class EmployeeControllerAddEmployeeTest {
         String token = "testToken";
         AddEmployeeDTO addEmployeeDTO = new AddEmployeeDTO(
                 "Test Employee Name",
-                "20/03/2020",
-                "20/03/2022",
+                LocalDate.now().minusMonths(1),
+                LocalDate.now().plusMonths(1),
                 "Test Legal Name",
                 "BY11UNBS00000000000000000000",
                 "BY12UNBS000000000000000000000"
@@ -429,8 +516,8 @@ class EmployeeControllerAddEmployeeTest {
         String token = "testToken";
         AddEmployeeDTO addEmployeeDTO = new AddEmployeeDTO(
                 "Test Employee Name",
-                "20/03/2020",
-                "20/03/2022",
+                LocalDate.now().minusMonths(1),
+                LocalDate.now().plusMonths(1),
                 "Test Legal Name",
                 "BY11UNBS00000000000000000000",
                 "BY12UNBS00000000000000000000"

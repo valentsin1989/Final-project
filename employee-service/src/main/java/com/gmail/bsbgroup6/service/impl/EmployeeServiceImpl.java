@@ -105,4 +105,34 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         return getEmployeeDTOs;
     }
+
+    @Override
+    @Transactional
+    public AddedEmployeeDTO getByFullName(String fullName) {
+        Employee employee = employeeRepository.findByName(fullName).orElse(null);
+        if (employee == null) {
+            return null;
+        }
+        return employeeConverter.convertToAddedEmployeeDTO(employee);
+    }
+
+    @Override
+    @Transactional
+    public AddedEmployeeDTO getByPersonIbanByn(String personIbanByn) {
+        Employee employee = employeeRepository.findByPersonIbanByn(personIbanByn).orElse(null);
+        if (employee == null) {
+            return null;
+        }
+        return employeeConverter.convertToAddedEmployeeDTO(employee);
+    }
+
+    @Override
+    @Transactional
+    public AddedEmployeeDTO getByPersonIbanCurrency(String personIbanCurrency) {
+        Employee employee = employeeRepository.findByPersonIbanCurrency(personIbanCurrency).orElse(null);
+        if (employee == null) {
+            return null;
+        }
+        return employeeConverter.convertToAddedEmployeeDTO(employee);
+    }
 }

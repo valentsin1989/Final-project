@@ -5,7 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient("${feign.service.auth}")
+@FeignClient(value = "${feign.service.auth}", primary = false)
 public interface AuthServiceRepository {
 
     @PostMapping(value = "/api/auth/session", consumes = MediaType.APPLICATION_JSON_VALUE)

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient("${feign.service.legal}")
+@FeignClient(value = "${feign.service.legal}", primary = false)
 public interface LegalServiceRepository {
 
     @GetMapping(value = "/api/legals")

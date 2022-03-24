@@ -2,11 +2,14 @@ package com.gmail.bsbgroup6.repository;
 
 import com.gmail.bsbgroup6.service.model.LegalEntityDTO;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name = "${feign.legal.name}", url = "${feign.legal.url}")
+@FeignClient("${feign.service.legal}")
 public interface LegalServiceRepository {
 
     @GetMapping(value = "/api/legals")

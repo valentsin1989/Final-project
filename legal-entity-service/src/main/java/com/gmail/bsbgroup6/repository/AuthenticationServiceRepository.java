@@ -5,9 +5,10 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient(name = "${feign.name}", url = "${feign.url}")
+
+@FeignClient(value = "${feign.service.auth}", primary = false)
 public interface AuthenticationServiceRepository {
 
-        @PostMapping(value = "/api/auth/session", consumes = MediaType.APPLICATION_JSON_VALUE)
-        String getStatusToken(@RequestHeader("Authorization") String token);
+    @PostMapping(value = "/api/auth/session", consumes = MediaType.APPLICATION_JSON_VALUE)
+    String getStatusToken(@RequestHeader("Authorization") String token);
 }

@@ -1,6 +1,6 @@
 package com.gmail.bsbgroup6.security.filter;
 
-import com.gmail.bsbgroup6.repository.AuthServiceRepository;
+import com.gmail.bsbgroup6.repository.RedisRepository;
 import com.gmail.bsbgroup6.security.util.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtils jwtUtils;
     @Autowired
-    private AuthServiceRepository authServiceRepository;
+    private RedisRepository redisRepository;
 
     @Override
     protected void doFilterInternal(
@@ -37,8 +37,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         try {
             String jwt = parseJwt(request);
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                String tokenStatus = authServiceRepository.getStatusToken(request.getHeader("Authorization"));
-                if (tokenStatus.equals("ENABLE")) {
+                boolean isExistToken = redisRepository.isExist(jwt);
+                if (isExistToken) {
                     Collection<GrantedAuthority> authorities = new ArrayList<>();
                     authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(

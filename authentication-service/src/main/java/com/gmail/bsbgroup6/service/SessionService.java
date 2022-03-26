@@ -8,5 +8,4 @@ public interface SessionService {
 
     String closeAllSessionsByUsername(String username);
 
-    boolean isActiveSession(String jwtToken);
 }

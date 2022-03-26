@@ -1,5 +1,6 @@
 package com.gmail.bsbgroup6.service.impl;
 
+import com.gmail.bsbgroup6.repository.RedisRepository;
 import com.gmail.bsbgroup6.repository.SessionRepository;
 import com.gmail.bsbgroup6.repository.UserRepository;
 import com.gmail.bsbgroup6.repository.model.Session;
@@ -21,6 +22,7 @@ public class SessionServiceImpl implements SessionService {
     private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
     private final SessionRepository sessionRepository;
+    private final RedisRepository redisRepository;
 
     @Override
     @Transactional
@@ -35,6 +37,7 @@ public class SessionServiceImpl implements SessionService {
             session.setSessionId(token);
             session.setCreatedDate(dateString);
             user.addSession(session);
+            redisRepository.add(token, "ENABLE");
             return token;
         }
         return null;
@@ -55,7 +58,9 @@ public class SessionServiceImpl implements SessionService {
                     newSession.setSessionId(newToken);
                     newSession.setCreatedDate(dateString);
                     user.addSession(newSession);
-                    return token;
+                    redisRepository.delete(token);
+                    redisRepository.add(newToken, "ENABLE");
+                    return newToken;
                 }
             }
         }
@@ -72,20 +77,13 @@ public class SessionServiceImpl implements SessionService {
             Set<Session> sessions = user.getListSession();
             sessions.stream()
                     .filter(session -> session.getClosedDate() == null)
-                    .forEach(session -> session.setClosedDate(dateString));
+                    .forEach(session -> {
+                        session.setClosedDate(dateString);
+                        redisRepository.delete(session.getSessionId());
+                    });
             return username;
         }
         return null;
-    }
-
-    @Override
-    public boolean isActiveSession(String jwtToken) {
-        Session session = sessionRepository.findByToken(jwtToken).orElse(null);
-        if (session != null) {
-            String closedDate = session.getClosedDate();
-            return closedDate == null;
-        }
-        return false;
     }
 
     private String getDateNowInStringFormat() {

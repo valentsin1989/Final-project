@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd
+      http://www.liquibase.org/xml/ns/pro
+      http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd">
+
+    <changeSet id="8" author="bsbgroup6@gmail.com">
+        <createTable tableName="applications_conversion">
+            <column name="id" type="serial">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="unique_number" type="uuid">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="status" type="varchar(255)"/>
+            <column name="value_legal" type="int"/>
+            <column name="value_individual" type="int"/>
+            <column name="employee_id" type="int"/>
+            <column name="percentage_conversion" type="float"/>
+            <column name="legal_id" type="int"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="9" author="bsbgroup6@gmail.com">
+        <createTable tableName="application_details">
+            <column name="application_id" type="int"/>
+            <column name="create_date" type="varchar"/>
+            <column name="last_update" type="varchar"/>
+            <column name="note" type="varchar"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="10" author="bsbgroup6@gmail.com">
+        <addForeignKeyConstraint baseTableName="application_details"
+                                 baseColumnNames="application_id"
+                                 constraintName="foreign_key_for_application_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"
+                                 referencedTableName="applications_conversion"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+</databaseChangeLog>

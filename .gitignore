@@ -24,6 +24,7 @@ hs_err_pid*
 
 *TXT*
 *.txt
+*.csv
 
 #Intellij IDEA#
 .idea
@@ -42,6 +43,7 @@ mvnw.cmd
 data_auth
 data_legal_entity
 data_empl
+data_application
 
 #redis
 redis-data

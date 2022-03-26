@@ -22,21 +22,32 @@ services:
       - "5433:5433"
     command: -p 5433
   postgresThirdDB:
-      image: postgres:13.3
-      environment:
-        POSTGRES_DB: project-database
-        POSTGRES_USER: "user"
-        POSTGRES_PASSWORD: "bsbgroup6"
-      volumes:
-        - ./data_empl:/var/lib/postgresql/data
-      ports:
-        - "5434:5434"
-      command: -p 5434
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: project-database
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "bsbgroup6"
+    volumes:
+      - ./data_empl:/var/lib/postgresql/data
+    ports:
+      - "5434:5434"
+    command: -p 5434
+  postgresForthDB:
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: project-database
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "bsbgroup6"
+    volumes:
+      - ./data_application:/var/lib/postgresql/data
+    ports:
+      - "5435:5435"
+    command: -p 5435
   redis:
-      image: redis:6.2-alpine
-      volumes:
-        - ./redis-data:/var/lib/redis
-        - ./redis.conf:/usr/local/etc/redis/redis.conf
-      ports:
-        - "6379:6379"
-      command: redis-server --save 60 1 --requirepass bsbgroup6 --loglevel warning
+    image: redis:6.2-alpine
+    volumes:
+      - ./redis-data:/var/lib/redis
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"
+    command: redis-server --save 60 1 --requirepass bsbgroup6 --loglevel warning

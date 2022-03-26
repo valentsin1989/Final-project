@@ -2,8 +2,8 @@ package com.gmail.bsbgroup6.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmail.bsbgroup6.errors.AuthEntryPointJwt;
-import com.gmail.bsbgroup6.repository.AuthServiceRepository;
 import com.gmail.bsbgroup6.repository.LegalServiceRepository;
+import com.gmail.bsbgroup6.repository.RedisRepository;
 import com.gmail.bsbgroup6.security.util.JwtUtils;
 import com.gmail.bsbgroup6.service.EmployeeService;
 import com.gmail.bsbgroup6.service.model.EmployeeDTO;
@@ -40,7 +40,7 @@ class EmployeeControllerGetByIdTest {
     @MockBean
     private EmployeeService employeeService;
     @MockBean
-    private AuthServiceRepository authServiceRepository;
+    private RedisRepository redisRepository;
     @MockBean
     private LegalServiceRepository legalServiceRepository;
 

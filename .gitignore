@@ -42,3 +42,7 @@ mvnw.cmd
 data_auth
 data_legal_entity
 data_empl
+
+#redis
+redis-data
+redis.conf

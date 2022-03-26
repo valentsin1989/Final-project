@@ -1,6 +1,7 @@
 package com.gmail.bsbgroup6.controller;
 
 import com.gmail.bsbgroup6.controller.validator.UserValidator;
+import com.gmail.bsbgroup6.repository.RedisRepository;
 import com.gmail.bsbgroup6.service.SessionService;
 import com.gmail.bsbgroup6.service.UserService;
 import com.gmail.bsbgroup6.service.model.AddUserDTO;
@@ -10,6 +11,7 @@ import com.gmail.bsbgroup6.service.model.LogoutDTO;
 import com.gmail.bsbgroup6.util.JwtUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -64,18 +66,6 @@ public class AuthController {
                     .body(Map.of("message", "Sessions not found."));
         }
         return ResponseEntity.ok().build();
-    }
-
-    @PostMapping(value = "/session", consumes = "application/json")
-    public ResponseEntity<Object> isActiveSession(@RequestHeader HttpHeaders headers) {
-        String jwtToken = jwtUtils.parseJwtFromHeaders(headers);
-        if (jwtToken != null && jwtUtils.validateJwtToken(jwtToken)) {
-            boolean isActiveSession = sessionService.isActiveSession(jwtToken);
-            if (isActiveSession) {
-                return ResponseEntity.ok().body("ENABLE");
-            }
-        }
-        return ResponseEntity.ok().body("DISABLE");
     }
 
     private ResponseEntity<Object> addSessionForUserByLogin(LoginDTO loginDTO) {

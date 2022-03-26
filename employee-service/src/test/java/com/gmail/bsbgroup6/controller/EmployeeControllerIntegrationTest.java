@@ -1,11 +1,13 @@
 package com.gmail.bsbgroup6.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.gmail.bsbgroup6.repository.RedisRepository;
 import com.gmail.bsbgroup6.security.util.JwtUtils;
 import com.gmail.bsbgroup6.service.model.AddEmployeeDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
@@ -15,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.time.LocalDate;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -32,6 +35,9 @@ class EmployeeControllerIntegrationTest extends BaseIT {
     @Autowired
     private JwtUtils jwtUtils;
 
+    @MockBean
+    private RedisRepository redisRepository;
+
     @Test
     @WithMockUser(roles = {"USER"})
     void contextLoads() throws JsonProcessingException {
@@ -47,6 +53,8 @@ class EmployeeControllerIntegrationTest extends BaseIT {
                 "BY11UNBS00000000000000000000",
                 "BY12UNBS00000000000000000000"
         );
+
+        when(redisRepository.isExist(token)).thenReturn(true);
 
         HttpEntity<AddEmployeeDTO> entity = new HttpEntity<>(addEmployeeDTO, headers);
         ResponseEntity<AddEmployeeDTO> response = restTemplate.exchange(

@@ -1,5 +1,7 @@
 package com.gmail.bsbgroup6.controller;
 
+import com.gmail.bsbgroup6.service.model.AddUserDTO;
+import com.gmail.bsbgroup6.service.model.AddedUserDTO;
 import com.gmail.bsbgroup6.util.JwtUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,18 +30,22 @@ class AuthIntegrationTest extends BaseIT {
     void contextLoads() {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + jwtUtils.generateJwtToken());
 
-        HttpEntity<Object> entity = new HttpEntity<>(null, headers);
+        AddUserDTO addUserDTO = new AddUserDTO();
+        addUserDTO.setUsername("testname");
+        addUserDTO.setPassword("testPass123");
+        addUserDTO.setUsermail("allen@example.com");
+        addUserDTO.setFirstName("ТестовоеИмя");
+
+        HttpEntity<Object> entity = new HttpEntity<>(addUserDTO, headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
-                createURLWithPort("/api/auth/session"),
+                createURLWithPort("/api/auth/signin"),
                 HttpMethod.POST,
                 entity,
                 String.class
         );
-        assertTrue(response.getStatusCode().equals(HttpStatus.OK));
-        assertTrue(response.getBody().equals("DISABLE"));
+        assertTrue(response.getStatusCode().equals(HttpStatus.CREATED));
     }
 
     private String createURLWithPort(String uri) {

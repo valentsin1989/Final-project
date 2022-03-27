@@ -19,6 +19,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class SessionServiceImpl implements SessionService {
 
+    public static final String DATE_PATTERN = "hh.mm dd.MM.yyyy";
     private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
     private final SessionRepository sessionRepository;
@@ -88,7 +89,7 @@ public class SessionServiceImpl implements SessionService {
 
     private String getDateNowInStringFormat() {
         LocalDateTime localDateTime = LocalDateTime.now();
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("hh.mm dd.MM.yyyy");
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
         return dateTimeFormatter.format(localDateTime);
     }
 }

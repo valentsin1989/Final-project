@@ -20,6 +20,8 @@ import java.util.Set;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    public static final int MAX_LOGIN_ATTEMPTS = 5;
+    public static final String DATE_PATTERN = "hh.mm dd.MM.yyyy";
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -33,7 +35,7 @@ public class UserServiceImpl implements UserService {
             return null;
         }
         LocalDateTime localDateTime = LocalDateTime.now();
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("hh.mm dd.MM.yyyy");
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
         String dateString = dateTimeFormatter.format(localDateTime);
         user.setCreatedDate(dateString);
         return convertToAddedUserDTO(user);
@@ -59,7 +61,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findUserByNameOrMail(username, userMail).orElse(null);
         if (user != null) {
             Integer loginFailed = user.getLoginFailed();
-            if (loginFailed >= 5) {
+            if (loginFailed >= MAX_LOGIN_ATTEMPTS) {
                 user.setStatus(StatusEnum.DISABLE);
                 String dateString = getDateNowInStringFormat();
                 user.setLogoutDate(dateString);
@@ -149,7 +151,7 @@ public class UserServiceImpl implements UserService {
 
     private String getDateNowInStringFormat() {
         LocalDateTime localDateTime = LocalDateTime.now();
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("hh.mm dd.MM.yyyy");
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
         return dateTimeFormatter.format(localDateTime);
     }
 }

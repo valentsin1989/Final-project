@@ -30,9 +30,7 @@ public class EmployeeValidator {
         }
         if (personIbanCurrency != null) {
             AddedEmployeeDTO employeeDTO = employeeService.getByPersonIbanCurrency(personIbanCurrency);
-            if (employeeDTO != null) {
-                return true;
-            }
+            return employeeDTO != null;
         }
         return false;
     }

@@ -28,7 +28,8 @@ public class JwtUtils {
                 .compact();
     }
 
-    public String getUserNameFromJwtToken(String token) {
+    public String getUserNameFromJwtToken(String tokenHeader) {
+        String token = tokenHeader.substring("Bearer ".length());
         return Jwts
                 .parser()
                 .setSigningKey(jwtSecret)

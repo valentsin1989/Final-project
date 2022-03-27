@@ -33,7 +33,8 @@ public class SessionServiceImpl implements SessionService {
             String dateString = getDateNowInStringFormat();
             user.setLoginDate(dateString);
             user.setLoginFailed(0);
-            String token = jwtUtils.generateJwtToken();
+            String username = user.getUsername();
+            String token = jwtUtils.generateJwtToken(username);
             Session session = new Session();
             session.setSessionId(token);
             session.setCreatedDate(dateString);
@@ -54,7 +55,8 @@ public class SessionServiceImpl implements SessionService {
                 session.setClosedDate(dateString);
                 User user = session.getUser();
                 if (user != null) {
-                    String newToken = jwtUtils.generateJwtToken();
+                    String username = user.getUsername();
+                    String newToken = jwtUtils.generateJwtToken(username);
                     Session newSession = new Session();
                     newSession.setSessionId(newToken);
                     newSession.setCreatedDate(dateString);

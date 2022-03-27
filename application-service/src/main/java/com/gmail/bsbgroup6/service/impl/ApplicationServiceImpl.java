@@ -5,6 +5,7 @@ import com.gmail.bsbgroup6.repository.ApplicationRepository;
 import com.gmail.bsbgroup6.repository.model.Application;
 import com.gmail.bsbgroup6.repository.model.ApplicationDetails;
 import com.gmail.bsbgroup6.repository.model.Pagination;
+import com.gmail.bsbgroup6.security.util.JwtUtils;
 import com.gmail.bsbgroup6.service.ApplicationService;
 import com.gmail.bsbgroup6.service.converter.ApplicationConverter;
 import com.gmail.bsbgroup6.service.exception.ServiceException;
@@ -12,6 +13,7 @@ import com.gmail.bsbgroup6.service.model.AddApplicationDTO;
 import com.gmail.bsbgroup6.service.model.AddedApplicationDTO;
 import com.gmail.bsbgroup6.service.model.ApplicationDTO;
 import com.gmail.bsbgroup6.service.model.PaginationApplicationDTO;
+import com.gmail.bsbgroup6.service.model.StatusUpdateApplicationDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -35,9 +39,11 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     private static final String SEPARATOR_FOR_LINES = ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
     private static final int DEFAULT_COUNT_OF_ENTITIES_PER_PAGE = 10;
+    private static final String DATE_PATTERN = "dd/MM/yyyy";
     private final ApplicationRepository applicationRepository;
     private final ApplicationDetailsRepository applicationDetailsRepository;
     private final ApplicationConverter applicationConverter;
+    private final JwtUtils jwtUtils;
 
     @Override
     public List<AddApplicationDTO> getFromFile(MultipartFile file) {
@@ -122,6 +128,30 @@ public class ApplicationServiceImpl implements ApplicationService {
             return null;
         }
         return applicationConverter.convertToApplicationDTO(application, token);
+    }
+
+    @Override
+    @Transactional
+    public StatusUpdateApplicationDTO updateStatus(StatusUpdateApplicationDTO applicationDTO, String token) {
+        String uniqueNumber = applicationDTO.getApplicationConvId();
+        UUID uuid = UUID.fromString(uniqueNumber);
+        String status = applicationDTO.getStatus();
+        Application application = applicationRepository.findByUUID(uuid).orElse(null);
+        if (application != null) {
+            application.setStatus(status);
+            ApplicationDetails applicationDetails = application.getApplicationDetails();
+            LocalDate localDate = LocalDate.now();
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
+            String dateString = dateTimeFormatter.format(localDate);
+            applicationDetails.setLastUpdate(dateString);
+            application.setApplicationDetails(applicationDetails);
+        }
+        Application updatedApplication = applicationRepository.update(application);
+        String updatedStatus = updatedApplication.getStatus();
+        applicationDTO.setStatus(updatedStatus);
+        //String userName = jwtUtils.getUserNameFromJwtToken(token);
+        //applicationDTO.setUser(userName);
+        return applicationDTO;
     }
 
     private AddApplicationDTO getApplicationDTO(String[] applicationFields) {

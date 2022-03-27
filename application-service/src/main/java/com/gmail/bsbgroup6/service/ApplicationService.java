@@ -3,6 +3,7 @@ package com.gmail.bsbgroup6.service;
 import com.gmail.bsbgroup6.service.model.AddApplicationDTO;
 import com.gmail.bsbgroup6.service.model.AddedApplicationDTO;
 import com.gmail.bsbgroup6.service.model.ApplicationDTO;
+import com.gmail.bsbgroup6.service.model.LegalUpdateApplicationDTO;
 import com.gmail.bsbgroup6.service.model.PaginationApplicationDTO;
 import com.gmail.bsbgroup6.service.model.StatusUpdateApplicationDTO;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,4 +24,6 @@ public interface ApplicationService {
     ApplicationDTO getByUniqueNumber(UUID applicationConvId, String token);
 
     StatusUpdateApplicationDTO updateStatus(StatusUpdateApplicationDTO applicationDTO, String token);
+
+    LegalUpdateApplicationDTO updateLegal(LegalUpdateApplicationDTO applicationDTO, String token);
 }

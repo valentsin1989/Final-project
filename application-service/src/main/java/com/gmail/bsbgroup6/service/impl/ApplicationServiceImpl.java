@@ -2,6 +2,7 @@ package com.gmail.bsbgroup6.service.impl;
 
 import com.gmail.bsbgroup6.repository.ApplicationDetailsRepository;
 import com.gmail.bsbgroup6.repository.ApplicationRepository;
+import com.gmail.bsbgroup6.repository.LegalServiceRepository;
 import com.gmail.bsbgroup6.repository.model.Application;
 import com.gmail.bsbgroup6.repository.model.ApplicationDetails;
 import com.gmail.bsbgroup6.repository.model.Pagination;
@@ -12,6 +13,8 @@ import com.gmail.bsbgroup6.service.exception.ServiceException;
 import com.gmail.bsbgroup6.service.model.AddApplicationDTO;
 import com.gmail.bsbgroup6.service.model.AddedApplicationDTO;
 import com.gmail.bsbgroup6.service.model.ApplicationDTO;
+import com.gmail.bsbgroup6.service.model.LegalEntityDTO;
+import com.gmail.bsbgroup6.service.model.LegalUpdateApplicationDTO;
 import com.gmail.bsbgroup6.service.model.PaginationApplicationDTO;
 import com.gmail.bsbgroup6.service.model.StatusUpdateApplicationDTO;
 import lombok.AllArgsConstructor;
@@ -42,6 +45,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     private static final String DATE_PATTERN = "dd/MM/yyyy";
     private final ApplicationRepository applicationRepository;
     private final ApplicationDetailsRepository applicationDetailsRepository;
+    private final LegalServiceRepository legalServiceRepository;
     private final ApplicationConverter applicationConverter;
     private final JwtUtils jwtUtils;
 
@@ -149,8 +153,33 @@ public class ApplicationServiceImpl implements ApplicationService {
         Application updatedApplication = applicationRepository.update(application);
         String updatedStatus = updatedApplication.getStatus();
         applicationDTO.setStatus(updatedStatus);
-        //String userName = jwtUtils.getUserNameFromJwtToken(token);
-        //applicationDTO.setUser(userName);
+        String userName = jwtUtils.getUserNameFromJwtToken(token);
+        applicationDTO.setUser(userName);
+        return applicationDTO;
+    }
+
+    @Override
+    @Transactional
+    public LegalUpdateApplicationDTO updateLegal(LegalUpdateApplicationDTO applicationDTO, String token) {
+        String legalEntityName = applicationDTO.getLegalEntityName();
+        List<LegalEntityDTO> legalEntities = legalServiceRepository.getLegalByName(legalEntityName, token);
+        LegalEntityDTO legalEntityDTO = legalEntities.get(0);
+        if (!legalEntityDTO.getName().equals(legalEntityName)) {
+            return null;
+        }
+        String applicationConvId = applicationDTO.getApplicationConvId();
+        UUID uuid = UUID.fromString(applicationConvId);
+        Application application = applicationRepository.findByUUID(uuid).orElse(null);
+        Long legalEntityDTOId = legalEntityDTO.getId();
+        if (application != null) {
+            application.setLegalEntityId(legalEntityDTOId);
+            ApplicationDetails applicationDetails = application.getApplicationDetails();
+            LocalDate localDate = LocalDate.now();
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
+            String dateString = dateTimeFormatter.format(localDate);
+            applicationDetails.setLastUpdate(dateString);
+            application.setApplicationDetails(applicationDetails);
+        }
         return applicationDTO;
     }
 

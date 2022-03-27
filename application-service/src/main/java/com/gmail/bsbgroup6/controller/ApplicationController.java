@@ -1,5 +1,6 @@
 package com.gmail.bsbgroup6.controller;
 
+import com.gmail.bsbgroup6.security.util.JwtUtils;
 import com.gmail.bsbgroup6.service.ApplicationService;
 import com.gmail.bsbgroup6.service.model.AddApplicationDTO;
 import com.gmail.bsbgroup6.service.model.AddedApplicationDTO;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 public class ApplicationController {
 
     private final ApplicationService applicationService;
+    private final JwtUtils jwtUtils;
 
     @PostMapping(value = "/api/files", consumes = "multipart/form-data")
     @PreAuthorize("hasAuthority('ROLE_USER')")

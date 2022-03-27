@@ -1,12 +1,13 @@
 package com.gmail.bsbgroup6.controller;
 
-import com.gmail.bsbgroup6.security.util.JwtUtils;
+import com.gmail.bsbgroup6.controller.validator.StatusUpdateApplicationDTOValidator;
 import com.gmail.bsbgroup6.service.ApplicationService;
 import com.gmail.bsbgroup6.service.model.AddApplicationDTO;
 import com.gmail.bsbgroup6.service.model.AddedApplicationDTO;
 import com.gmail.bsbgroup6.service.model.ApplicationDTO;
 import com.gmail.bsbgroup6.service.model.PaginationApplicationDTO;
 import com.gmail.bsbgroup6.service.model.PaginationEnum;
+import com.gmail.bsbgroup6.service.model.StatusUpdateApplicationDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,7 +33,7 @@ import java.util.stream.Collectors;
 public class ApplicationController {
 
     private final ApplicationService applicationService;
-    private final JwtUtils jwtUtils;
+    private final StatusUpdateApplicationDTOValidator updateDTOValidator;
 
     @PostMapping(value = "/api/files", consumes = "multipart/form-data")
     @PreAuthorize("hasAuthority('ROLE_USER')")
@@ -92,5 +94,27 @@ public class ApplicationController {
                     .body("Заявление на конверсию от сотрудника не существует");
         }
         return ResponseEntity.status(HttpStatus.OK).body(applicationDTO);
+    }
+
+    @PutMapping(value = "/api/applications")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public ResponseEntity<Object> updateApplication(
+            @RequestParam(name = "status") String status,
+            @RequestParam(name = "applicationConvId") String applicationCondId,
+            @RequestHeader(value = "Authorization") String token
+    ) {
+        StatusUpdateApplicationDTO applicationDTO = new StatusUpdateApplicationDTO();
+        applicationDTO.setApplicationConvId(applicationCondId);
+        applicationDTO.setStatus(status);
+        boolean isValidStatus = updateDTOValidator.isValidStatus(applicationDTO);
+        if (!isValidStatus) {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+                    .body("Статус не может быть изменен");
+        }
+        StatusUpdateApplicationDTO updatedApplicationDTO = applicationService.updateStatus(applicationDTO, token);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("Статус изменен " + updatedApplicationDTO.getStatus() + " "
+                        //+ updatedApplicationDTO.getUser()
+                );
     }
 }

@@ -4,6 +4,7 @@ import com.gmail.bsbgroup6.service.model.AddApplicationDTO;
 import com.gmail.bsbgroup6.service.model.AddedApplicationDTO;
 import com.gmail.bsbgroup6.service.model.ApplicationDTO;
 import com.gmail.bsbgroup6.service.model.PaginationApplicationDTO;
+import com.gmail.bsbgroup6.service.model.StatusUpdateApplicationDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -20,4 +21,6 @@ public interface ApplicationService {
     List<ApplicationDTO> getByPagination(PaginationApplicationDTO applicationDTO, String token);
 
     ApplicationDTO getByUniqueNumber(UUID applicationConvId, String token);
+
+    StatusUpdateApplicationDTO updateStatus(StatusUpdateApplicationDTO applicationDTO, String token);
 }

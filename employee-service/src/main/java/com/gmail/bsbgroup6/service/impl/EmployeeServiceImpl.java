@@ -38,8 +38,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (id == null) {
             throw new ServiceException("Employee wasn't added.");
         }
-        Employee employeeWthId = employeeRepository.findById(id);
-        EmployeeDetails employeeDetails = employeeConverter.convertToEmployeeDetails(employeeWthId);
+        EmployeeDetails employeeDetails = employeeConverter.convertToEmployeeDetails(employee);
         employeeDetailsRepository.add(employeeDetails);
         return employeeConverter.convertToAddedEmployeeDTO(employee);
     }

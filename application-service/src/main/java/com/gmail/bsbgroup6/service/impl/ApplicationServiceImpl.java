@@ -92,8 +92,8 @@ public class ApplicationServiceImpl implements ApplicationService {
         if (id == null) {
             throw new ServiceException("Application wasn't added");
         }
-        Application applicationWithId = applicationRepository.findById(id);
-        ApplicationDetails applicationDetails = applicationConverter.convertToApplicationDetails(applicationWithId);
+        //Application applicationWithId = applicationRepository.findById(id);
+        ApplicationDetails applicationDetails = applicationConverter.convertToApplicationDetails(application);
         applicationDetailsRepository.add(applicationDetails);
         return applicationConverter.convertToAddedApplicationDTO(application);
     }
@@ -180,6 +180,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             applicationDetails.setLastUpdate(dateString);
             application.setApplicationDetails(applicationDetails);
         }
+        applicationRepository.update(application);
         return applicationDTO;
     }
 

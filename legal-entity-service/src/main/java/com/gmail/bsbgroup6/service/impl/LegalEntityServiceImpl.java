@@ -40,8 +40,7 @@ public class LegalEntityServiceImpl implements LegalEntityService {
         if (id == null) {
             throw new ServiceException("Legal entity wasn't added.");
         }
-        LegalEntity legalEntityWithId = legalEntityRepository.findById(id);
-        LegalEntityDates legalEntityDates = legalEntityConverter.convertToLegalEntityDates(legalEntityWithId);
+        LegalEntityDates legalEntityDates = legalEntityConverter.convertToLegalEntityDates(legalEntity);
         legalEntityDatesRepository.add(legalEntityDates);
         return legalEntityConverter.convertToLegalEntityDTO(legalEntity);
     }

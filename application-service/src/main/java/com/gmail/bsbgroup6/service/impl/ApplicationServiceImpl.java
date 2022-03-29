@@ -17,6 +17,7 @@ import com.gmail.bsbgroup6.service.model.LegalEntityDTO;
 import com.gmail.bsbgroup6.service.model.LegalUpdateApplicationDTO;
 import com.gmail.bsbgroup6.service.model.PaginationApplicationDTO;
 import com.gmail.bsbgroup6.service.model.StatusUpdateApplicationDTO;
+import com.gmail.bsbgroup6.service.model.UpdatedByStatusApplicationDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -92,7 +93,6 @@ public class ApplicationServiceImpl implements ApplicationService {
         if (id == null) {
             throw new ServiceException("Application wasn't added");
         }
-        //Application applicationWithId = applicationRepository.findById(id);
         ApplicationDetails applicationDetails = applicationConverter.convertToApplicationDetails(application);
         applicationDetailsRepository.add(applicationDetails);
         return applicationConverter.convertToAddedApplicationDTO(application);
@@ -136,7 +136,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     @Transactional
-    public StatusUpdateApplicationDTO updateStatus(StatusUpdateApplicationDTO applicationDTO, String token) {
+    public UpdatedByStatusApplicationDTO updateStatus(StatusUpdateApplicationDTO applicationDTO, String token) {
         String uniqueNumber = applicationDTO.getApplicationConvId();
         UUID uuid = UUID.fromString(uniqueNumber);
         String status = applicationDTO.getStatus();
@@ -151,11 +151,12 @@ public class ApplicationServiceImpl implements ApplicationService {
             application.setApplicationDetails(applicationDetails);
         }
         Application updatedApplication = applicationRepository.update(application);
+        UpdatedByStatusApplicationDTO updatedApplicationDTO = new UpdatedByStatusApplicationDTO();
         String updatedStatus = updatedApplication.getStatus();
-        applicationDTO.setStatus(updatedStatus);
+        updatedApplicationDTO.setStatus(updatedStatus);
         String userName = jwtUtils.getUserNameFromJwtToken(token);
-        applicationDTO.setUser(userName);
-        return applicationDTO;
+        updatedApplicationDTO.setUser(userName);
+        return updatedApplicationDTO;
     }
 
     @Override

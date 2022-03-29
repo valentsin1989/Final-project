@@ -37,7 +37,6 @@ class SessionServiceImplTest {
     @InjectMocks
     private SessionServiceImpl sessionService;
 
-
     @Test
     void shouldReturnNullWhenAddSessionByInvalidUserId() {
         Long userId = 1L;

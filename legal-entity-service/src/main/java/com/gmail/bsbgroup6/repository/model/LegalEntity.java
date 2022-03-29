@@ -45,5 +45,5 @@ public class LegalEntity {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private LegalEntityDates legalEntityDates;
+    private LegalEntityDetails legalEntityDetails;
 }

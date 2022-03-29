@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-
 @ExtendWith(MockitoExtension.class)
 class LegalEntityValidatorTest {
 
@@ -24,7 +23,7 @@ class LegalEntityValidatorTest {
     private LegalEntityValidator legalEntityValidator;
 
     @Test
-    void shouldReturnTruWhenIsLegalEntityExistsByNameIfExist() {
+    void shouldReturnTrueWhenLegalEntityExistsByNameIfExist() {
         AddLegalEntityDTO addLegalEntityDTO = new AddLegalEntityDTO("name", null, null, null, null);
         LegalEntityDTO legalEntityDTO = new LegalEntityDTO();
         when(legalEntityService.getByName(addLegalEntityDTO.getName())).thenReturn(legalEntityDTO);
@@ -32,7 +31,7 @@ class LegalEntityValidatorTest {
     }
 
     @Test
-    void shouldReturnTruWhenIsLegalEntityExistsByUnpIfExist() {
+    void shouldReturnTrueWhenLegalEntityExistsByUnpIfExist() {
         AddLegalEntityDTO addLegalEntityDTO = new AddLegalEntityDTO(null, 1, null, null, null);
         LegalEntityDTO legalEntityDTO = new LegalEntityDTO();
         when(legalEntityService.getByUnp(addLegalEntityDTO.getUnp().toString())).thenReturn(legalEntityDTO);
@@ -40,7 +39,7 @@ class LegalEntityValidatorTest {
     }
 
     @Test
-    void shouldReturnTruWhenIsLegalEntityExistsByIbanBynIfExist() {
+    void shouldReturnTrueWhenLegalEntityExistsByIbanBynIfExist() {
         AddLegalEntityDTO addLegalEntityDTO = new AddLegalEntityDTO(null, null, "1", null, null);
         LegalEntityDTO legalEntityDTO = new LegalEntityDTO();
         when(legalEntityService.getByIbanByByn(addLegalEntityDTO.getIbanByByn())).thenReturn(legalEntityDTO);
@@ -48,7 +47,7 @@ class LegalEntityValidatorTest {
     }
 
     @Test
-    void shouldReturnTruWhenIsLegalEntityExistsIfAllParametersNull() {
+    void shouldReturnTrueWhenLegalEntityExistsIfAllParametersNull() {
         AddLegalEntityDTO addLegalEntityDTO = new AddLegalEntityDTO(null, null, null, null, null);
         assertFalse(legalEntityValidator.isLegalEntityExists(addLegalEntityDTO));
     }

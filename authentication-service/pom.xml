@@ -9,7 +9,7 @@
         <version>1.0</version>
     </parent>
 
-  <artifactId>authentication-service</artifactId>
+    <artifactId>authentication-service</artifactId>
     <version>1.0</version>
 
     <properties>

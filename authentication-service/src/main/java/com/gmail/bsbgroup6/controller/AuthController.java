@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class AuthController {
     private final JwtUtils jwtUtils;
     private final UserValidator userValidator;
 
-    @PostMapping(value = "/signin", consumes = "application/json")
+    @PostMapping(value = "/signin", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> registerUser(@Validated @RequestBody AddUserDTO addUserDTO) {
         AddedUserDTO addedUser = userService.addUser(addUserDTO);
         if (addedUser != null) {
@@ -41,7 +42,7 @@ public class AuthController {
                 .body(Map.of("message", "User is not created."));
     }
 
-    @PostMapping(value = "/login", consumes = "application/json")
+    @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> authenticateUser(
             @Validated @RequestBody LoginDTO loginDTO,
             @RequestHeader HttpHeaders headers
@@ -55,7 +56,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping(value = "/logout", consumes = "application/json")
+    @PostMapping(value = "/logout", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> deAuthenticateUser(@Validated @RequestBody LogoutDTO logoutDTO) {
         String username = logoutDTO.getUsername();
         String usernameWithClosedSessions = sessionService.closeAllSessionsByUsername(username);

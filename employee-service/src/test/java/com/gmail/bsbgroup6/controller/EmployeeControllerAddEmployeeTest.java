@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -54,7 +53,7 @@ class EmployeeControllerAddEmployeeTest {
 
     @WithMockUser(roles = {"USER"})
     @Test
-    void shouldReturn200WhenWePostEmployeeWithValidInput() throws Exception {
+    void shouldReturn201WhenWePostEmployeeWithValidInput() throws Exception {
         String token = "testToken";
         AddEmployeeDTO addEmployeeDTO = new AddEmployeeDTO(
                 "Test Employee Name",
@@ -86,10 +85,10 @@ class EmployeeControllerAddEmployeeTest {
 
     @WithMockUser(roles = {"USER"})
     @Test
-    void shouldReturn400WhenWePostEmployeeWithUnsupportedURL() throws Exception {
-        mockMvc.perform(get("/api/employees/employee")
+    void shouldReturn405WhenWePostEmployeeWithUnsupportedURL() throws Exception {
+        mockMvc.perform(post("/api/employees/employee")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isMethodNotAllowed());
     }
 
     @WithMockUser(roles = {"USER"})

@@ -19,7 +19,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class SessionServiceImpl implements SessionService {
 
-    public static final String DATE_PATTERN = "hh.mm dd.MM.yyyy";
+    private static final String DATE_PATTERN = "hh.mm dd.MM.yyyy";
     private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
     private final SessionRepository sessionRepository;

@@ -1,7 +1,6 @@
 package com.gmail.bsbgroup6.controller;
 
 import com.gmail.bsbgroup6.service.model.AddUserDTO;
-import com.gmail.bsbgroup6.service.model.AddedUserDTO;
 import com.gmail.bsbgroup6.util.JwtUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

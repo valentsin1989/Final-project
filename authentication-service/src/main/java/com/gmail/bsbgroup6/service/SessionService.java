@@ -7,5 +7,4 @@ public interface SessionService {
     String updateSessionByToken(String jwtToken);
 
     String closeAllSessionsByUsername(String username);
-
 }

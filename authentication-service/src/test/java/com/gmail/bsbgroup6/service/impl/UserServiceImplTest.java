@@ -19,7 +19,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
@@ -34,7 +33,6 @@ class UserServiceImplTest {
 
     @InjectMocks
     private UserServiceImpl userService;
-
 
     @Test
     void shouldReturnAddedUserWhenAddUserNotComplete() {
@@ -125,7 +123,6 @@ class UserServiceImplTest {
         when(userRepository.findByUserMail(usermail)).thenReturn(Optional.of(user));
         assertEquals(UserDTO.class, userService.getByUserMail(usermail).getClass());
     }
-
 
     @Test
     void ShouldReturnTrueWhenIsBlockedUserIfUserBlocked() {

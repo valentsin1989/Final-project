@@ -1,9 +1,9 @@
 package com.gmail.bsbgroup6.service.impl;
 
-import com.gmail.bsbgroup6.repository.LegalEntityDatesRepository;
+import com.gmail.bsbgroup6.repository.LegalEntityDetailsRepository;
 import com.gmail.bsbgroup6.repository.LegalEntityRepository;
 import com.gmail.bsbgroup6.repository.model.LegalEntity;
-import com.gmail.bsbgroup6.repository.model.LegalEntityDates;
+import com.gmail.bsbgroup6.repository.model.LegalEntityDetails;
 import com.gmail.bsbgroup6.repository.model.LegalSearch;
 import com.gmail.bsbgroup6.repository.model.Pagination;
 import com.gmail.bsbgroup6.service.LegalEntityService;
@@ -14,21 +14,19 @@ import com.gmail.bsbgroup6.service.model.LegalEntityDTO;
 import com.gmail.bsbgroup6.service.model.PaginationLegalEntityDTO;
 import com.gmail.bsbgroup6.service.model.SearchLegalEntityDTO;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 @AllArgsConstructor
 public class LegalEntityServiceImpl implements LegalEntityService {
 
     private static final int DEFAULT_COUNT_OF_ENTITIES_PER_PAGE = 10;
     private final LegalEntityRepository legalEntityRepository;
-    private final LegalEntityDatesRepository legalEntityDatesRepository;
+    private final LegalEntityDetailsRepository legalEntityDetailsRepository;
     private final LegalEntityConverter legalEntityConverter;
 
     @Override
@@ -40,8 +38,8 @@ public class LegalEntityServiceImpl implements LegalEntityService {
         if (id == null) {
             throw new ServiceException("Legal entity wasn't added.");
         }
-        LegalEntityDates legalEntityDates = legalEntityConverter.convertToLegalEntityDates(legalEntity);
-        legalEntityDatesRepository.add(legalEntityDates);
+        LegalEntityDetails legalEntityDetails = legalEntityConverter.convertToLegalEntityDetails(legalEntity);
+        legalEntityDetailsRepository.add(legalEntityDetails);
         return legalEntityConverter.convertToLegalEntityDTO(legalEntity);
     }
 

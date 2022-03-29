@@ -20,8 +20,8 @@ import java.util.Set;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    public static final int MAX_LOGIN_ATTEMPTS = 5;
-    public static final String DATE_PATTERN = "hh.mm dd.MM.yyyy";
+    private static final int MAX_LOGIN_ATTEMPTS = 5;
+    private static final String DATE_PATTERN = "hh.mm dd.MM.yyyy";
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -85,7 +85,6 @@ public class UserServiceImpl implements UserService {
             return null;
         }
         return convertToUserDTO(user);
-
     }
 
     @Override

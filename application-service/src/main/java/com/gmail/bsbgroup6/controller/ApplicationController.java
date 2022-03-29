@@ -1,7 +1,6 @@
 package com.gmail.bsbgroup6.controller;
 
 import com.gmail.bsbgroup6.controller.validator.LegalUpdateApplicationDTOValidator;
-import com.gmail.bsbgroup6.controller.validator.StatusUpdateApplicationDTOValidator;
 import com.gmail.bsbgroup6.service.ApplicationService;
 import com.gmail.bsbgroup6.service.model.AddApplicationDTO;
 import com.gmail.bsbgroup6.service.model.AddedApplicationDTO;
@@ -10,15 +9,18 @@ import com.gmail.bsbgroup6.service.model.LegalUpdateApplicationDTO;
 import com.gmail.bsbgroup6.service.model.PaginationApplicationDTO;
 import com.gmail.bsbgroup6.service.model.PaginationEnum;
 import com.gmail.bsbgroup6.service.model.StatusUpdateApplicationDTO;
+import com.gmail.bsbgroup6.service.model.UpdatedByStatusApplicationDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,7 +37,6 @@ import java.util.stream.Collectors;
 public class ApplicationController {
 
     private final ApplicationService applicationService;
-    private final StatusUpdateApplicationDTOValidator updateDTOValidator;
     private final LegalUpdateApplicationDTOValidator legalUpdateValidator;
 
     @PostMapping(value = "/api/files", consumes = "multipart/form-data")
@@ -102,23 +103,11 @@ public class ApplicationController {
     @PutMapping(value = "/api/applications")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<Object> updateApplicationByStatus(
-            @RequestParam(name = "status") String status,
-            @RequestParam(name = "applicationConvId") String applicationConvId,
+            @RequestBody @Validated StatusUpdateApplicationDTO applicationDTO,
             @RequestHeader(value = "Authorization") String token
     ) {
-        StatusUpdateApplicationDTO applicationDTO = new StatusUpdateApplicationDTO();
-        applicationDTO.setApplicationConvId(applicationConvId);
-        applicationDTO.setStatus(status);
-        boolean isValidStatus = updateDTOValidator.isValidStatus(applicationDTO);
-        if (!isValidStatus) {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
-                    .body("Статус не может быть изменен");
-        }
-        StatusUpdateApplicationDTO updatedApplicationDTO = applicationService.updateStatus(applicationDTO, token);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body("Статус изменен " + updatedApplicationDTO.getStatus() + " "
-                        + updatedApplicationDTO.getUser()
-                );
+        UpdatedByStatusApplicationDTO updatedApplicationDTO = applicationService.updateStatus(applicationDTO, token);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedApplicationDTO);
     }
 
     @PutMapping(value = "/api/applications/{ApplicationConvId}")
@@ -134,15 +123,20 @@ public class ApplicationController {
         boolean isLinkedToLegalEntity = legalUpdateValidator.isLinkedToLegalEntity(applicationDTO, token);
         if (isLinkedToLegalEntity) {
             return ResponseEntity.status(HttpStatus.OK)
-                    .body("Заявка на конверсию " + ApplicationConvId + " привязана к " + legalEntityName);
+                    .body(String.format(
+                            "Заявка на конверсию %s привязана к компании %s", ApplicationConvId, legalEntityName
+                    ));
         }
         LegalUpdateApplicationDTO updatedApplicationDTO = applicationService.updateLegal(applicationDTO, token);
         if (updatedApplicationDTO == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Компания " + legalEntityName + " не существует");
+                    .body(String.format(
+                            "Компания %s не существует", legalEntityName
+                    ));
         }
         return ResponseEntity.status(HttpStatus.OK)
-                .body("Заявка на конверсию " + updatedApplicationDTO.getApplicationConvId() +
-                        " перепривязана к " + updatedApplicationDTO.getLegalEntityName());
+                .body(String.format(
+                        "Заявка на конверсию %s перепривязана к %s", ApplicationConvId, legalEntityName
+                ));
     }
 }

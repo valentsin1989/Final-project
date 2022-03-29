@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <changeSet id="5" author="bsbgroup6@gmail.com">
+        <createTable tableName="employees">
+            <column name="id" type="serial">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="full_name" type="varchar(255)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="recruitment_date" type="varchar"/>
+            <column name="termination_date" type="varchar"/>
+            <column name="person_iban_byn" type="varchar(28)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="person_iban_currency" type="varchar(28)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="legal_id" type="int"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="6" author="bsbgroup6@gmail.com">
+        <createTable tableName="employee_details">
+            <column name="employee_id" type="int"/>
+            <column name="create_date" type="varchar"/>
+            <column name="last_update" type="varchar"/>
+            <column name="position_by_legal" type="varchar"/>
+            <column name="note" type="varchar"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="7" author="bsbgroup6@gmail.com">
+        <addForeignKeyConstraint baseTableName="employee_details"
+                                 baseColumnNames="employee_id"
+                                 constraintName="foreign_key_for_employee_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"
+                                 referencedTableName="employees"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+</databaseChangeLog>

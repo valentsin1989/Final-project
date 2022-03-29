@@ -1,0 +1,53 @@
+version: "3.9"
+services:
+  legal-entity-postgresDB:
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: project-database
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "bsbgroup6"
+    volumes:
+      - ./data_legal_entity:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  auth-service-postgresDB:
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: project-database
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "bsbgroup6"
+    volumes:
+      - ./data_auth:/var/lib/postgresql/data
+    ports:
+      - "5433:5433"
+    command: -p 5433
+  employee-service-postgresDB:
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: project-database
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "bsbgroup6"
+    volumes:
+      - ./data_empl:/var/lib/postgresql/data
+    ports:
+      - "5434:5434"
+    command: -p 5434
+  application-service-postgresDB:
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: project-database
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "bsbgroup6"
+    volumes:
+      - ./data_application:/var/lib/postgresql/data
+    ports:
+      - "5435:5435"
+    command: -p 5435
+  token-cache-redis-DB:
+    image: redis:6.2-alpine
+    volumes:
+      - ./redis-data:/var/lib/redis
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"
+    command: redis-server --save 60 1 --requirepass bsbgroup6 --loglevel warning

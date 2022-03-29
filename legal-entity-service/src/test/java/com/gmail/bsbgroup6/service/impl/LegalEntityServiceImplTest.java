@@ -1,10 +1,10 @@
 package com.gmail.bsbgroup6.service.impl;
 
-import com.gmail.bsbgroup6.repository.LegalEntityDatesRepository;
+import com.gmail.bsbgroup6.repository.LegalEntityDetailsRepository;
 import com.gmail.bsbgroup6.repository.LegalEntityRepository;
 import com.gmail.bsbgroup6.repository.RedisRepository;
 import com.gmail.bsbgroup6.repository.model.LegalEntity;
-import com.gmail.bsbgroup6.repository.model.LegalEntityDates;
+import com.gmail.bsbgroup6.repository.model.LegalEntityDetails;
 import com.gmail.bsbgroup6.repository.model.LegalSearch;
 import com.gmail.bsbgroup6.repository.model.Pagination;
 import com.gmail.bsbgroup6.security.util.JwtUtils;
@@ -42,7 +42,7 @@ class LegalEntityServiceImplTest {
     private LegalEntityConverter legalEntityConverter;
 
     @Mock
-    private LegalEntityDatesRepository legalEntityDatesRepository;
+    private LegalEntityDetailsRepository legalEntityDatesRepository;
 
     @InjectMocks
     private LegalEntityServiceImpl legalEntityService;
@@ -60,10 +60,10 @@ class LegalEntityServiceImplTest {
         AddLegalEntityDTO addLegalEntityDTO = new AddLegalEntityDTO("name", 1, "1", LegalTypeEnum.NO_RESIDENT, 1);
         LegalEntity legalEntity = new LegalEntity();
         legalEntity.setId(1L);
-        LegalEntityDates legalEntityDates = new LegalEntityDates();
+        LegalEntityDetails legalEntityDetails = new LegalEntityDetails();
         LegalEntityDTO legalEntityDTO = new LegalEntityDTO();
         when(legalEntityConverter.convertToLegalEntity(addLegalEntityDTO)).thenReturn(legalEntity);
-        when(legalEntityConverter.convertToLegalEntityDates(legalEntity)).thenReturn(legalEntityDates);
+        when(legalEntityConverter.convertToLegalEntityDetails(legalEntity)).thenReturn(legalEntityDetails);
         when(legalEntityConverter.convertToLegalEntityDTO(legalEntity)).thenReturn(legalEntityDTO);
         assertEquals(LegalEntityDTO.class, legalEntityService.add(addLegalEntityDTO).getClass());
     }
@@ -106,14 +106,14 @@ class LegalEntityServiceImplTest {
     }
 
     @Test
-    void shouldReturnLegalEntityDTOWhenGetByIdIfUserNotExist() {
+    void shouldReturnLegalEntityDTOWhenGetByIdIfLegalEntityDoesNotExist() {
         Long id = 1L;
         when(legalEntityRepository.findById(id)).thenReturn(null);
         assertNull(legalEntityService.getById(id));
     }
 
     @Test
-    void shouldReturnLegalEntityDTOWhenGetByIdIfUserExist() {
+    void shouldReturnLegalEntityDTOWhenGetByIdIfLegalEntityExists() {
         Long id = 1L;
         LegalEntity legalEntity = new LegalEntity();
         LegalEntityDTO legalEntityDTO = new LegalEntityDTO();
@@ -122,16 +122,15 @@ class LegalEntityServiceImplTest {
         assertEquals(LegalEntityDTO.class, legalEntityService.getById(id).getClass());
     }
 
-
     @Test
-    void shouldReturnLegalEntityDTOWhenGetByNameIfUserNotExist() {
+    void shouldReturnLegalEntityDTOWhenGetByNameIfLegalEntityDoesNotExist() {
         String name = "name";
         when(legalEntityRepository.findByName(name)).thenReturn(Optional.empty());
         assertNull(legalEntityService.getByName(name));
     }
 
     @Test
-    void shouldReturnLegalEntityDTOWhenGetByNameIfUserExist() {
+    void shouldReturnLegalEntityDTOWhenGetByNameIfLegalEntityExists() {
         String name = "name";
         LegalEntity legalEntity = new LegalEntity();
         LegalEntityDTO legalEntityDTO = new LegalEntityDTO();
@@ -141,14 +140,14 @@ class LegalEntityServiceImplTest {
     }
 
     @Test
-    void shouldReturnLegalEntityDTOWhenGetByUnpIfUserNotExist() {
+    void shouldReturnLegalEntityDTOWhenGetByUnpIfLegalEntityDoesNotExist() {
         String unp = "100000000";
         when(legalEntityRepository.findByUnp(unp)).thenReturn(Optional.empty());
         assertNull(legalEntityService.getByUnp(unp));
     }
 
     @Test
-    void shouldReturnLegalEntityDTOWhenGetByUnpIfUserExist() {
+    void shouldReturnLegalEntityDTOWhenGetByUnpIfLegalEntityExists() {
         String unp = "100000000";
         LegalEntity legalEntity = new LegalEntity();
         LegalEntityDTO legalEntityDTO = new LegalEntityDTO();
@@ -158,14 +157,14 @@ class LegalEntityServiceImplTest {
     }
 
     @Test
-    void shouldReturnLegalEntityDTOWhenGetByIbanByBynIfUserNotExist() {
+    void shouldReturnLegalEntityDTOWhenGetByIbanByBynIfLegalEntityDoesNotExist() {
         String ibanByByn = "BY00UNBS0000000000000000000";
         when(legalEntityRepository.findByIbanByByn(ibanByByn)).thenReturn(Optional.empty());
         assertNull(legalEntityService.getByIbanByByn(ibanByByn));
     }
 
     @Test
-    void shouldReturnLegalEntityDTOWhenGetByIbanByBynIfUserExist() {
+    void shouldReturnLegalEntityDTOWhenGetByIbanByBynIfLegalEntityExists() {
         String ibanByByn = "BY00UNBS0000000000000000000";
         LegalEntity legalEntity = new LegalEntity();
         LegalEntityDTO legalEntityDTO = new LegalEntityDTO();

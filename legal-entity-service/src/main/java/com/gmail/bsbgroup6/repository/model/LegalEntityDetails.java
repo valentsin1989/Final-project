@@ -17,8 +17,8 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Entity
-@Table(name = "legal_entity_dates")
-public class LegalEntityDates {
+@Table(name = "legal_entity_details")
+public class LegalEntityDetails {
 
     @GenericGenerator(
             name = "generator",
@@ -40,11 +40,14 @@ public class LegalEntityDates {
     @Column(name = "last_update")
     private String lastUpdate;
 
-    public LegalEntityDates() {
+    @Column(name = "note")
+    private String note;
+
+    public LegalEntityDetails() {
     }
 
-    public LegalEntityDates(LegalEntity legalEntity) {
+    public LegalEntityDetails(LegalEntity legalEntity) {
         this.legalEntity = legalEntity;
-        legalEntity.setLegalEntityDates(this);
+        legalEntity.setLegalEntityDetails(this);
     }
 }

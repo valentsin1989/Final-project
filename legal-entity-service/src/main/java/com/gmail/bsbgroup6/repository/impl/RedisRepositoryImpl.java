@@ -15,5 +15,4 @@ public class RedisRepositoryImpl implements RedisRepository {
     public boolean isExist(String token) {
         return Boolean.TRUE.equals(redisTemplate.hasKey(token));
     }
-
 }

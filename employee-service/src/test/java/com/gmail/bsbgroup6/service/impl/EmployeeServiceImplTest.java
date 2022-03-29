@@ -48,7 +48,7 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    void shouldReturnLegalEntityDTOWhenAddIfAdded() {
+    void shouldReturnEmployeeDTOWhenAddIfAdded() {
         String token = "token";
         AddEmployeeDTO addEmployeeDTO = new AddEmployeeDTO("name", LocalDate.now(), LocalDate.now(), "test", "test", "test");
         Employee employee = new Employee();
@@ -87,7 +87,7 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    void shouldReturnEmployeeDTOWhenGetByIdIfEmployeeNotExist() {
+    void shouldReturnEmployeeDTOWhenGetByIdIfEmployeeDoesNotExist() {
         String token = "token";
         Long id = 1L;
         when(employeeRepository.findById(id)).thenReturn(null);
@@ -95,18 +95,18 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    void shouldReturnEmployeeDTOWhenGetByIdIfEmployeeExist() {
+    void shouldReturnEmployeeDTOWhenGetByIdIfEmployeeExists() {
         String token = "token";
         Long id = 1L;
         Employee employee = new Employee();
-        EmployeeDTO employeeDTO = new EmployeeDTO(1l, "", "", "", "","", "");
+        EmployeeDTO employeeDTO = new EmployeeDTO(1l, "", "", "", "", "", "");
         when(employeeRepository.findById(id)).thenReturn(employee);
         when(employeeConverter.convertToEmployeeDTO(employee, token)).thenReturn(employeeDTO);
         assertEquals(EmployeeDTO.class, employeeService.getById(id, token).getClass());
     }
 
     @Test
-    void shouldReturnEmptyListWhenGetByParametersIfEmployeeNotExist() {
+    void shouldReturnEmptyListWhenGetByParametersIfEmployeeDoesNotExist() {
         String token = "token";
         SearchEmployeeDTO searchEmployeeDTO = new SearchEmployeeDTO();
         searchEmployeeDTO.setFullName("name");
@@ -115,14 +115,14 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    void shouldReturnAddedEmployeeDTOWhenGetByFullNameIfEmployeeNotExist() {
+    void shouldReturnAddedEmployeeDTOWhenGetByFullNameIfEmployeeDoesNotExist() {
         String fullName = "name";
         when(employeeRepository.findByName(fullName)).thenReturn(Optional.empty());
         assertNull(employeeService.getByFullName(fullName));
     }
 
     @Test
-    void shouldReturnAddedEmployeeDTOWhenGetByFullNameIfEmployeeExist() {
+    void shouldReturnAddedEmployeeDTOWhenGetByFullNameIfEmployeeExists() {
         String fullName = "name";
         Employee employee = new Employee();
         AddedEmployeeDTO addedEmployeeDTO = new AddedEmployeeDTO();
@@ -132,14 +132,14 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    void shouldReturnAddedEmployeeDTOWhenGetByPersonIbanBynIfEmployeeNotExist() {
+    void shouldReturnAddedEmployeeDTOWhenGetByPersonIbanBynIfEmployeeDoesNotExist() {
         String ibanByByn = "test";
         when(employeeRepository.findByPersonIbanByn(ibanByByn)).thenReturn(Optional.empty());
         assertNull(employeeService.getByPersonIbanByn(ibanByByn));
     }
 
     @Test
-    void shouldReturnAddedEmployeeDTOWhenGetByPersonIbanBynIfEmployeeExist() {
+    void shouldReturnAddedEmployeeDTOWhenGetByPersonIbanBynIfEmployeeExists() {
         String ibanByByn = "test";
         Employee employee = new Employee();
         AddedEmployeeDTO addedEmployeeDTO = new AddedEmployeeDTO();
@@ -149,23 +149,19 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    void shouldReturnAddedEmployeeDTOWhenGetByPersonIbanCurrencyIfEmployeeNotExist() {
+    void shouldReturnAddedEmployeeDTOWhenGetByPersonIbanCurrencyIfEmployeeDoesNotExist() {
         String personIbanCurrency = "test";
         when(employeeRepository.findByPersonIbanCurrency(personIbanCurrency)).thenReturn(Optional.empty());
         assertNull(employeeService.getByPersonIbanCurrency(personIbanCurrency));
     }
 
     @Test
-    void shouldReturnAddedEmployeeDTOWhenGetByPersonIbanCurrencyIfEmployeeExist() {
+    void shouldReturnAddedEmployeeDTOWhenGetByPersonIbanCurrencyIfEmployeeExists() {
         String personIbanCurrency = "test";
         Employee employee = new Employee();
         AddedEmployeeDTO addedEmployeeDTO = new AddedEmployeeDTO();
         when(employeeRepository.findByPersonIbanCurrency(personIbanCurrency)).thenReturn(Optional.of(employee));
         when(employeeConverter.convertToAddedEmployeeDTO(employee)).thenReturn(addedEmployeeDTO);
         assertEquals(AddedEmployeeDTO.class, employeeService.getByPersonIbanCurrency(personIbanCurrency).getClass());
-    }
-
-    @Test
-    void getByPersonIbanCurrency() {
     }
 }

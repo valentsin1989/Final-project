@@ -19,7 +19,6 @@ import org.springframework.test.context.ActiveProfiles;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = "eureka.client.enabled:false"
@@ -38,7 +37,6 @@ class LegalEntityControllerIntegrationTest extends BaseIT {
 
     @MockBean
     private RedisRepository redisRepository;
-
 
     @Test
     @WithMockUser(roles = {"USER"})

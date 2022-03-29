@@ -29,7 +29,7 @@ public class JwtUtils {
     }
 
     public String getUserNameFromJwtToken(String tokenHeader) {
-        String token = tokenHeader.substring("Bearer ".length());
+        String token = tokenHeader.substring("Bearer " .length());
         return Jwts
                 .parser()
                 .setSigningKey(jwtSecret)

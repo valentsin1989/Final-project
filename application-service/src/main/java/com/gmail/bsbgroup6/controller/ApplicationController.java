@@ -12,6 +12,7 @@ import com.gmail.bsbgroup6.service.model.StatusUpdateApplicationDTO;
 import com.gmail.bsbgroup6.service.model.UpdatedByStatusApplicationDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -39,7 +40,7 @@ public class ApplicationController {
     private final ApplicationService applicationService;
     private final LegalUpdateApplicationDTOValidator legalUpdateValidator;
 
-    @PostMapping(value = "/api/files", consumes = "multipart/form-data")
+    @PostMapping(value = "/api/files", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<Object> addApplication(
             @RequestParam(name = "dtoFile") MultipartFile dtoFile,

@@ -51,7 +51,7 @@ class LegalEntityControllerAddLegalEntityTest {
 
     @WithMockUser(roles = {"USER"})
     @Test
-    void shouldReturn200WhenWePostEntityWithValidInput() throws Exception {
+    void shouldReturn201WhenWePostEntityWithValidInput() throws Exception {
         AddLegalEntityDTO addLegalEntityDTO = new AddLegalEntityDTO(
                 "Test Name",
                 123456789,

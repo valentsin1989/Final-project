@@ -38,7 +38,7 @@ public class JwtUtils {
     public String parseJwtFromHeaders(HttpHeaders headers) {
         String headerAuth = headers.getFirst("Authorization");
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-            return headerAuth.substring("Bearer ".length());
+            return headerAuth.substring("Bearer " .length());
         }
         return null;
     }

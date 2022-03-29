@@ -29,17 +29,18 @@
     </changeSet>
 
     <changeSet id="5" author="bsbgroup6@gmail.com">
-        <createTable tableName="legal_entity_dates">
+        <createTable tableName="legal_entity_details">
             <column name="legal_id" type="int"/>
             <column name="create_date" type="varchar"/>
             <column name="last_update" type="varchar"/>
+            <column name="note" type="varchar"/>
         </createTable>
     </changeSet>
 
     <changeSet id="6" author="bsbgroup6@gmail.com">
-        <addForeignKeyConstraint baseTableName="legal_entity_dates"
+        <addForeignKeyConstraint baseTableName="legal_entity_details"
                                  baseColumnNames="legal_id"
-                                 constraintName="foreign_key_for_company_id"
+                                 constraintName="foreign_key_for_legal_id"
                                  onDelete="CASCADE"
                                  onUpdate="CASCADE"
                                  referencedTableName="legal_entities"

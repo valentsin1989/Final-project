@@ -1,7 +1,7 @@
 package com.gmail.bsbgroup6.service.converter;
 
 import com.gmail.bsbgroup6.repository.model.LegalEntity;
-import com.gmail.bsbgroup6.repository.model.LegalEntityDates;
+import com.gmail.bsbgroup6.repository.model.LegalEntityDetails;
 import com.gmail.bsbgroup6.service.model.AddLegalEntityDTO;
 import com.gmail.bsbgroup6.service.model.LegalEntityDTO;
 import lombok.AllArgsConstructor;
@@ -58,16 +58,16 @@ public class LegalEntityConverter {
                 .collect(Collectors.toList());
     }
 
-    public LegalEntityDates convertToLegalEntityDates(LegalEntity legalEntityWithId) {
-        LegalEntityDates legalEntityDates = legalEntityWithId.getLegalEntityDates();
-        if (legalEntityDates == null) {
-            legalEntityDates = new LegalEntityDates(legalEntityWithId);
+    public LegalEntityDetails convertToLegalEntityDetails(LegalEntity legalEntityWithId) {
+        LegalEntityDetails legalEntityDetails = legalEntityWithId.getLegalEntityDetails();
+        if (legalEntityDetails == null) {
+            legalEntityDetails = new LegalEntityDetails(legalEntityWithId);
             LocalDate localDate = LocalDate.now();
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
             String dateString = dateTimeFormatter.format(localDate);
-            legalEntityDates.setCreateDate(dateString);
-            legalEntityDates.setLastUpdate(dateString);
+            legalEntityDetails.setCreateDate(dateString);
+            legalEntityDetails.setLastUpdate(dateString);
         }
-        return legalEntityDates;
+        return legalEntityDetails;
     }
 }

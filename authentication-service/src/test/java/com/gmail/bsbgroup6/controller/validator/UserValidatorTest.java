@@ -1,6 +1,5 @@
 package com.gmail.bsbgroup6.controller.validator;
 
-import com.gmail.bsbgroup6.repository.model.User;
 import com.gmail.bsbgroup6.service.UserService;
 import com.gmail.bsbgroup6.service.model.LoginDTO;
 import com.gmail.bsbgroup6.service.model.UserDTO;
@@ -15,7 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
-
 
 @ExtendWith(MockitoExtension.class)
 class UserValidatorTest {
